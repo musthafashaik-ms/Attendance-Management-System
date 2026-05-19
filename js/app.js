@@ -1,170 +1,88 @@
-const attendanceForm = document.getElementById("attendanceForm");
-const attendanceTable = document.getElementById("attendanceTable");
-const exportBtn = document.getElementById("exportBtn");
+const employeeForm = document.getElementById("employeeForm");
+const employeeTableBody = document.getElementById("employeeTableBody");
 
-const totalCount = document.getElementById("totalCount");
-const presentCount = document.getElementById("presentCount");
-const hoursCount = document.getElementById("hoursCount");
+let employees = JSON.parse(localStorage.getItem("employees")) || [];
 
-let employeeData = JSON.parse(localStorage.getItem("employeeAttendance")) || [];
+/* Add Employee */
 
-function calculateWorkingHours(loginTime, logoutTime) {
-    const [loginHour, loginMinute] = loginTime.split(":").map(Number);
-    const [logoutHour, logoutMinute] = logoutTime.split(":").map(Number);
+employeeForm.addEventListener("submit", function(e) {
 
-    const login = new Date();
-    login.setHours(loginHour, loginMinute, 0);
+    e.preventDefault();
 
-    const logout = new Date();
-    logout.setHours(logoutHour, logoutMinute, 0);
+    const empId = document.getElementById("empId").value;
+    const empName = document.getElementById("empName").value;
+    const empRole = document.getElementById("empRole").value;
+    const empDept = document.getElementById("empDept").value;
 
-    let diff = (logout - login) / (1000 * 60 * 60);
+    const employee = {
+        id: empId,
+        name: empName,
+        role: empRole,
+        department: empDept
+    };
 
-    if (diff < 0) {
-        diff += 24;
-    }
+    employees.push(employee);
 
-    return diff.toFixed(2);
-}
+    localStorage.setItem("employees", JSON.stringify(employees));
 
-function saveToLocalStorage() {
-    localStorage.setItem("employeeAttendance", JSON.stringify(employeeData));
-}
+    displayEmployees();
 
-function updateStats() {
-    totalCount.textContent = employeeData.length;
-    presentCount.textContent = employeeData.length;
+    employeeForm.reset();
+});
 
-    const totalHours = employeeData.reduce((sum, emp) => {
-        return sum + parseFloat(emp.workingHours);
-    }, 0);
+/* Display Employees */
 
-    hoursCount.textContent = totalHours.toFixed(2);
-}
+function displayEmployees() {
 
-function renderTable() {
-    attendanceTable.innerHTML = "";
+    employeeTableBody.innerHTML = "";
 
-    if (employeeData.length === 0) {
-        attendanceTable.innerHTML = `
+    employees.forEach((employee, index) => {
+
+        const row = `
             <tr>
-                <td colspan="8" style="text-align:center;">
-                    No employee records found
-                </td>
-            </tr>
-        `;
-        updateStats();
-        return;
-    }
-
-    employeeData.forEach((employee, index) => {
-        attendanceTable.innerHTML += `
-            <tr>
-                <td>${employee.empId}</td>
+                <td>${employee.id}</td>
                 <td>${employee.name}</td>
                 <td>${employee.role}</td>
                 <td>${employee.department}</td>
-                <td>${employee.loginTime}</td>
-                <td>${employee.logoutTime}</td>
-                <td>${employee.workingHours} hrs</td>
                 <td>
-                    <button onclick="deleteEmployee(${index})"
-                            style="
-                                background:#e74c3c;
-                                color:white;
-                                border:none;
-                                padding:8px 12px;
-                                border-radius:8px;
-                                cursor:pointer;
-                            ">
+                    <button onclick="deleteEmployee(${index})">
                         Delete
                     </button>
                 </td>
             </tr>
         `;
+
+        employeeTableBody.innerHTML += row;
     });
 
-    updateStats();
-    saveToLocalStorage();
+    updateDashboard();
 }
 
-attendanceForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const empId = document.getElementById("empId").value.trim();
-    const empName = document.getElementById("empName").value.trim();
-    const empRole = document.getElementById("empRole").value.trim();
-    const empDept = document.getElementById("empDept").value.trim();
-    const loginTime = document.getElementById("loginTime").value;
-    const logoutTime = document.getElementById("logoutTime").value;
-
-    if (!empId || !empName || !empRole || !empDept || !loginTime || !logoutTime) {
-        alert("Please fill all fields");
-        return;
-    }
-
-    const exists = employeeData.some(emp => emp.empId === empId);
-
-    if (exists) {
-        alert("Employee ID already exists");
-        return;
-    }
-
-    const workingHours = calculateWorkingHours(loginTime, logoutTime);
-
-    const employee = {
-        empId,
-        name: empName,
-        role: empRole,
-        department: empDept,
-        loginTime,
-        logoutTime,
-        workingHours
-    };
-
-    employeeData.unshift(employee);
-
-    attendanceForm.reset();
-
-    renderTable();
-});
+/* Delete Employee */
 
 function deleteEmployee(index) {
-    if (confirm("Delete this employee record?")) {
-        employeeData.splice(index, 1);
-        renderTable();
-    }
+
+    employees.splice(index, 1);
+
+    localStorage.setItem("employees", JSON.stringify(employees));
+
+    displayEmployees();
 }
 
-exportBtn.addEventListener("click", function () {
-    exportCSV();
-});
+/* Dashboard Counts */
 
-function exportCSV() {
-    if (employeeData.length === 0) {
-        alert("No data to export");
-        return;
-    }
 
-    let csv =
-        "Employee ID,Name,Role,Department,Login Time,Logout Time,Working Hours\n";
+function updateDashboard() {
 
-    employeeData.forEach((employee) => {
-        csv += `${employee.empId},${employee.name},${employee.role},${employee.department},${employee.loginTime},${employee.logoutTime},${employee.workingHours}\n`;
-    });
+    document.getElementById("totalEmployees").innerText = employees.length;
 
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
+    document.getElementById("presentCount").innerText = employees.length;
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "employee-attendance.csv";
+    document.getElementById("absentCount").innerText = 0;
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
+    document.getElementById("halfdayCount").innerText = 0;
 }
 
-renderTable();
+/* Initial Load */
+
+displayEmployees();

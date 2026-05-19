@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/employees.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-users"></i>
+            <span>Attendance Management</span>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="employees.html" class="menu-item active">
+                <i class="fa-solid fa-users"></i>
+                <span>Staff Management</span>
+            </a>
+
+            <a href="attendance.html" class="menu-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Leave Credits</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-money-check-dollar"></i>
+                <span>OT / Pay Records</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Reports</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="top-header">
+            <div>
+                <h1>Staff Management</h1>
+                <p>Add and manage employee details</p>
+            </div>
+        </header>
+
+        <!-- Employee Form -->
+        <section class="form-card">
+            <h2>Add Employee</h2>
+
+            <form id="employeeForm">
+                <div class="form-grid">
+
+                    <input type="text" id="empId" placeholder="Employee ID" required>
+
+                    <input type="text" id="empName" placeholder="Employee Name" required>
+
+                    <input type="text" id="empRole" placeholder="Role" required>
+
+                    <input type="text" id="empDepartment" placeholder="Department" required>
+
+                    <input type="time" id="loginTime" required>
+
+                    <input type="time" id="logoutTime" required>
+
+                    <select id="status" required>
+                        <option value="">Select Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Half Day">Half Day</option>
+                        <option value="Leave">Leave</option>
+                        <option value="Week Off">Week Off</option>
+                    </select>
+
+                    <input type="number"
+                           id="leaveCredits"
+                           placeholder="Leave Credits"
+                           required>
+
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Save Employee
+                </button>
+            </form>
+        </section>
+
+        <!-- Employee Table -->
+        <section class="table-card">
+            <div class="table-header">
+                <h2>Employee Records</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Emp ID</th>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                        <th>Working Hrs</th>
+                        <th>Status</th>
+                        <th>Leave Credits</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="employeeTable">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="js/employees.js"></script>
+</body>
+</html>

@@ -1,24 +1,23 @@
-<!DOCTYPE html>
+attendance.html<!DOCTYPE html>
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Attendance Management System</title>
+    <title>Attendance Management</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/attendance.css">
 
 </head>
 
@@ -51,6 +50,14 @@
 
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>Dashboard</span>
+
+            </a>
+
+            <a href="employees.html"
+               class="menu-item">
+
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Employees</span>
 
             </a>
 
@@ -109,22 +116,69 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <div class="welcome-box">
+        <!-- HEADER -->
+        <div class="page-header">
 
-            <h1>
-                Welcome to Attendance Management System
-            </h1>
+            <div>
+                <h1>Attendance Management</h1>
+                <p>Mark and manage employee attendance</p>
+            </div>
 
-            <p>
-                Manage attendance, leave credits,
-                reports, and employee records efficiently.
-            </p>
+        </div>
+
+        <!-- ALERT -->
+        <div id="alertBox" class="alert-box">
+            Attendance Marked Successfully
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filter-section">
+
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Search employees...">
+
+            <select id="statusFilter">
+                <option value="all">All Employees</option>
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+            </select>
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-card">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Employee ID</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Login Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="attendanceTableBody">
+
+                </tbody>
+
+            </table>
 
         </div>
 
     </main>
 
 </div>
+
+<!-- JavaScript -->
+<script src="js/attendance.js"></script>
 
 </body>
 
