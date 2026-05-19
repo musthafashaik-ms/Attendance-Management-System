@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Attendance Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="logo-text">
+                <h2>Attendance</h2>
+                <p>Management System</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="#" class="menu-item active">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Employees</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-building"></i>
+                <span>Departments</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- HEADER -->
+        <header class="top-header">
+            <div>
+                <h1>Employee Attendance Dashboard</h1>
+                <p>Manage employee attendance dynamically</p>
+            </div>
+
+            <div class="header-actions">
+                <button class="secondary-btn" id="exportBtn">
+                    <i class="fa-solid fa-file-export"></i>
+                    Export CSV
+                </button>
+            </div>
+        </header>
+
+        <!-- STATS -->
+        <section class="stats-grid">
+
+            <div class="stat-card blue">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <span>Total Employees</span>
+                    <strong id="totalCount">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card green">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div class="stat-info">
+                    <span>Present Today</span>
+                    <strong id="presentCount">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card orange">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <span>Total Hours</span>
+                    <strong id="hoursCount">0</strong>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- DASHBOARD GRID -->
+        <section class="dashboard-grid">
+
+            <!-- LEFT -->
+            <div class="left-panel">
+
+                <!-- EMPLOYEE TABLE -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Employee Attendance Records</h3>
+                    </div>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Login Time</th>
+                            <th>Logout Time</th>
+                            <th>Working Hours</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="attendanceTable">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="right-panel">
+
+                <!-- FORM -->
+                <div class="card">
+                    <h3>Add Employee Attendance</h3>
+
+                    <form id="attendanceForm">
+
+                        <input type="text"
+                               id="empId"
+                               placeholder="Employee ID"
+                               required>
+
+                        <input type="text"
+                               id="empName"
+                               placeholder="Employee Name"
+                               required>
+
+                        <input type="text"
+                               id="empRole"
+                               placeholder="Role"
+                               required>
+
+                        <input type="text"
+                               id="empDept"
+                               placeholder="Department"
+                               required>
+
+                        <label>Login Time</label>
+                        <input type="time"
+                               id="loginTime"
+                               required>
+
+                        <label>Logout Time</label>
+                        <input type="time"
+                               id="logoutTime"
+                               required>
+
+                        <button type="submit"
+                                class="primary-btn full-btn">
+                            <i class="fa-solid fa-plus"></i>
+                            Add Employee
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer-bar">
+            <i class="fa-solid fa-circle-info"></i>
+            Employee attendance data is automatically saved locally.
+        </footer>
+
+    </main>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
