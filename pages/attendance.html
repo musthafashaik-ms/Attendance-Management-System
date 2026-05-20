@@ -5,10 +5,16 @@
     </div>
 </div>
 
-<!-- Attendance Table -->
 <section class="table-card">
     <div class="table-header">
         <h2>Employee Attendance Records</h2>
+
+        <div style="display:flex; gap:10px; align-items:center;">
+            <input type="date" id="attendanceDate">
+            <button id="saveAttendanceBtn" class="primary-btn">
+                Save Attendance
+            </button>
+        </div>
     </div>
 
     <div class="table-wrapper">
@@ -27,9 +33,7 @@
                 </tr>
             </thead>
 
-            <tbody id="attendanceEmployeeTable">
-                <!-- Dynamic rows -->
-            </tbody>
+            <tbody id="attendanceEmployeeTable"></tbody>
         </table>
     </div>
 </section>

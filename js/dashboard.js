@@ -1,8 +1,13 @@
 (function () {
-    const STORAGE_KEY = "employees";
+    const EMPLOYEE_KEY = "employees";
+    const ATTENDANCE_KEY = "attendanceRecords";
 
     function getEmployees() {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        return JSON.parse(localStorage.getItem(EMPLOYEE_KEY)) || [];
+    }
+
+    function getAttendanceRecords() {
+        return JSON.parse(localStorage.getItem(ATTENDANCE_KEY)) || {};
     }
 
     function getStatusBadge(status) {
@@ -10,11 +15,12 @@
             "Present": "present",
             "Half Day": "halfday",
             "Leave": "leave",
-            "Week Off": "weekoff"
+            "Week Off": "weekoff",
+            "Absent": "leave"
         };
 
         return `
-            <span class="status ${badges[status] || 'absent'}">
+            <span class="status ${badges[status]}">
                 ${status}
             </span>
         `;
@@ -32,10 +38,15 @@
     function renderDashboard() {
         const attendanceTable = document.getElementById("attendanceTable");
         const negativeCreditTable = document.getElementById("negativeCreditTable");
+        const dateFilter = document.getElementById("dateFilter");
 
-        if (!attendanceTable || !negativeCreditTable) return;
+        if (!attendanceTable || !negativeCreditTable || !dateFilter) return;
 
         const employees = getEmployees();
+        const attendanceRecords = getAttendanceRecords();
+        const selectedDate = dateFilter.value;
+
+        const dayAttendance = attendanceRecords[selectedDate] || [];
 
         attendanceTable.innerHTML = "";
         negativeCreditTable.innerHTML = "";
@@ -50,18 +61,13 @@
         let zeroCredits = 0;
         let negativeCredits = 0;
 
-        if (employees.length === 0) {
-            attendanceTable.innerHTML = `
-                <tr>
-                    <td colspan="9" style="text-align:center;">
-                        No employee records found
-                    </td>
-                </tr>
-            `;
-        }
-
         employees.forEach(emp => {
-            const status = emp.status || "Absent";
+            const record = dayAttendance.find(r => r.empId === emp.empId);
+
+            const status = record?.status || "Absent";
+            const loginTime = record?.loginTime || "-";
+            const logoutTime = record?.logoutTime || "-";
+            const workingHours = record?.workingHours || "-";
             const credits = Number(emp.credits || 0);
 
             if (status === "Present") presentCount++;
@@ -81,9 +87,9 @@
                     <td>${emp.name}</td>
                     <td>${emp.role}</td>
                     <td>${emp.department}</td>
-                    <td>${emp.loginTime}</td>
-                    <td>${emp.logoutTime}</td>
-                    <td>${emp.workingHours}</td>
+                    <td>${loginTime}</td>
+                    <td>${logoutTime}</td>
+                    <td>${workingHours}</td>
                     <td>${getStatusBadge(status)}</td>
                     <td>${credits}</td>
                 </tr>
@@ -102,43 +108,42 @@
                 `;
             });
 
-        const totalEmployees = document.getElementById("totalEmployees");
-        const presentCountEl = document.getElementById("presentCount");
-        const halfDayCountEl = document.getElementById("halfDayCount");
-        const leaveCountEl = document.getElementById("leaveCount");
-        const weekOffCountEl = document.getElementById("weekOffCount");
+        document.getElementById("totalEmployees").textContent = employees.length;
+        document.getElementById("presentCount").textContent = presentCount;
+        document.getElementById("halfDayCount").textContent = halfDayCount;
+        document.getElementById("leaveCount").textContent = leaveCount;
+        document.getElementById("weekOffCount").textContent = weekOffCount;
 
-        const totalCreditsEl = document.getElementById("totalCredits");
-        const positiveCreditsEl = document.getElementById("positiveCredits");
-        const zeroCreditsEl = document.getElementById("zeroCredits");
-        const negativeCreditsEl = document.getElementById("negativeCredits");
-
-        if (totalEmployees) totalEmployees.textContent = employees.length;
-        if (presentCountEl) presentCountEl.textContent = presentCount;
-        if (halfDayCountEl) halfDayCountEl.textContent = halfDayCount;
-        if (leaveCountEl) leaveCountEl.textContent = leaveCount;
-        if (weekOffCountEl) weekOffCountEl.textContent = weekOffCount;
-
-        if (totalCreditsEl) totalCreditsEl.textContent = totalCredits;
-        if (positiveCreditsEl) positiveCreditsEl.textContent = positiveCredits;
-        if (zeroCreditsEl) zeroCreditsEl.textContent = zeroCredits;
-        if (negativeCreditsEl) negativeCreditsEl.textContent = negativeCredits;
+        document.getElementById("totalCredits").textContent = totalCredits;
+        document.getElementById("positiveCredits").textContent = positiveCredits;
+        document.getElementById("zeroCredits").textContent = zeroCredits;
+        document.getElementById("negativeCredits").textContent = negativeCredits;
 
         const negativeAlert = document.getElementById("negativeAlert");
 
-        if (negativeAlert) {
-            if (negativeCredits > 0) {
-                negativeAlert.style.display = "flex";
-                negativeAlert.querySelector("span").textContent =
-                    `${negativeCredits} Employees have Negative Credits`;
-            } else {
-                negativeAlert.style.display = "none";
-            }
+        if (negativeCredits > 0) {
+            negativeAlert.style.display = "flex";
+            negativeAlert.querySelector("span").textContent =
+                `${negativeCredits} Employees have Negative Credits`;
+        } else {
+            negativeAlert.style.display = "none";
         }
 
         updateSystemTime();
     }
 
-    renderDashboard();
+    function initDashboard() {
+        const dateFilter = document.getElementById("dateFilter");
+        if (!dateFilter) return;
+
+        const today = new Date().toISOString().split("T")[0];
+        dateFilter.value = today;
+
+        renderDashboard();
+
+        dateFilter.addEventListener("change", renderDashboard);
+    }
+
+    initDashboard();
     setInterval(updateSystemTime, 1000);
 })();
