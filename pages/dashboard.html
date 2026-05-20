@@ -64,7 +64,6 @@
 <section class="attendance-section">
     <div class="section-header">
         <h3>Employee Attendance Overview</h3>
-        <input type="date" id="dateFilter">
     </div>
 
     <div class="table-wrapper">
@@ -83,7 +82,9 @@
                 </tr>
             </thead>
 
-            <tbody id="attendanceTable"></tbody>
+            <tbody id="attendanceTable">
+                <!-- Dynamic rows -->
+            </tbody>
         </table>
     </div>
 </section>
@@ -125,35 +126,15 @@
                     </tr>
                 </thead>
 
-                <tbody id="negativeCreditTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="widget">
-        <div class="widget-header">
-            <h3>OT / Pay Records</h3>
-        </div>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Emp ID</th>
-                        <th>Date</th>
-                        <th>OT Hours</th>
-                        <th>Mode</th>
-                    </tr>
-                </thead>
-
-                <tbody id="otTable"></tbody>
+                <tbody id="negativeCreditTable">
+                    <!-- Dynamic rows -->
+                </tbody>
             </table>
         </div>
     </div>
 
 </section>
 
-<!-- Footer -->
 <footer class="dashboard-footer">
     <div class="footer-left">
         <i class="fa-solid fa-circle-check"></i>

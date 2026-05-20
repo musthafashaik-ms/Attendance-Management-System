@@ -1,185 +1,35 @@
-attendance.html<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Attendance Management</title>
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/attendance.css">
-
-</head>
-
-<body>
-
-<div class="dashboard-container">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-        <!-- LOGO -->
-        <div class="logo">
-
-            <div class="logo-icon">
-                <i class="fa-solid fa-users"></i>
-            </div>
-
-            <div class="logo-text">
-                <h2>Attendance</h2>
-                <p>Management System</p>
-            </div>
-
-        </div>
-
-        <!-- MENU -->
-        <nav class="sidebar-menu">
-
-            <a href="dashboard.html"
-               class="menu-item active">
-
-                <i class="fa-solid fa-chart-pie"></i>
-                <span>Dashboard</span>
-
-            </a>
-
-            <a href="employees.html"
-               class="menu-item">
-
-                <i class="fa-solid fa-calendar-check"></i>
-                <span>Employees</span>
-
-            </a>
-
-            <a href="attendance.html"
-               class="menu-item">
-
-                <i class="fa-solid fa-calendar-check"></i>
-                <span>Attendance</span>
-
-            </a>
-
-            <a href="credits.html"
-               class="menu-item">
-
-                <i class="fa-solid fa-wallet"></i>
-                <span>Leave Credits</span>
-
-            </a>
-
-            <a href="ot-pay.html"
-               class="menu-item">
-
-                <i class="fa-solid fa-money-bill-wave"></i>
-                <span>OT/Pay Records</span>
-
-            </a>
-
-            <a href="reports.html"
-               class="menu-item">
-
-                <i class="fa-solid fa-file-lines"></i>
-                <span>Reports</span>
-
-            </a>
-
-            <a href="settings.html"
-               class="menu-item">
-
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
-
-            </a>
-
-            <a href="#"
-               class="menu-item logout-btn">
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-
-            </a>
-
-        </nav>
-
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-
-        <!-- HEADER -->
-        <div class="page-header">
-
-            <div>
-                <h1>Attendance Management</h1>
-                <p>Mark and manage employee attendance</p>
-            </div>
-
-        </div>
-
-        <!-- ALERT -->
-        <div id="alertBox" class="alert-box">
-            Attendance Marked Successfully
-        </div>
-
-        <!-- FILTERS -->
-        <div class="filter-section">
-
-            <input type="text"
-                   id="searchInput"
-                   placeholder="Search employees...">
-
-            <select id="statusFilter">
-                <option value="all">All Employees</option>
-                <option value="present">Present</option>
-                <option value="absent">Absent</option>
-            </select>
-
-        </div>
-
-        <!-- TABLE -->
-        <div class="table-card">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-                        <th>Employee Name</th>
-                        <th>Employee ID</th>
-                        <th>Department</th>
-                        <th>Date</th>
-                        <th>Login Time</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-
-                </thead>
-
-                <tbody id="attendanceTableBody">
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </main>
-
+<div class="top-header">
+    <div>
+        <h1>Attendance Management</h1>
+        <p>Manage employee attendance records</p>
+    </div>
 </div>
 
-<!-- JavaScript -->
-<script src="js/attendance.js"></script>
+<!-- Attendance Table -->
+<section class="table-card">
+    <div class="table-header">
+        <h2>Employee Attendance Records</h2>
+    </div>
 
-</body>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Login Time</th>
+                    <th>Logout Time</th>
+                    <th>Working Hrs</th>
+                    <th>Status</th>
+                    <th>Leave Credits</th>
+                </tr>
+            </thead>
 
-</html>
+            <tbody id="attendanceEmployeeTable">
+                <!-- Dynamic rows -->
+            </tbody>
+        </table>
+    </div>
+</section>

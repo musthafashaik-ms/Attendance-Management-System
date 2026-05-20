@@ -1,36 +1,52 @@
 const pageContent = document.getElementById("pageContent");
 const menuItems = document.querySelectorAll(".menu-item");
 
+/* Remove old CSS */
+function removeDynamicCSS() {
+    document.querySelectorAll(".dynamic-css").forEach(css => css.remove());
+}
+
+/* Remove old JS */
+function removeDynamicJS() {
+    document.querySelectorAll(".dynamic-script").forEach(script => script.remove());
+}
+
 /* Load CSS */
 function loadPageCSS(pageName) {
-    const oldCSS = document.getElementById("dynamic-page-css");
-    if (oldCSS) oldCSS.remove();
+    removeDynamicCSS();
 
     const css = document.createElement("link");
     css.rel = "stylesheet";
     css.href = `css/${pageName}.css?v=${Date.now()}`;
-    css.id = "dynamic-page-css";
+    css.classList.add("dynamic-css");
 
     document.head.appendChild(css);
 }
 
-/* Load JS safely */
+/* Load JS */
 function loadPageScript(pageName) {
-    const oldScript = document.getElementById("dynamic-page-script");
-
-    if (oldScript) {
-        oldScript.remove();
-    }
+    removeDynamicJS();
 
     const script = document.createElement("script");
     script.src = `js/${pageName}.js?v=${Date.now()}`;
-    script.id = "dynamic-page-script";
+    script.classList.add("dynamic-script");
 
     document.body.appendChild(script);
 }
 
-/* Load HTML */
-async function loadPage(pageName) {
+/* Set active menu */
+function setActiveMenu(pageName) {
+    menuItems.forEach(item => {
+        item.classList.remove("active");
+
+        if (item.dataset.page === pageName) {
+            item.classList.add("active");
+        }
+    });
+}
+
+/* Load page */
+async function loadPage(pageName, updateURL = true) {
     try {
         const response = await fetch(`pages/${pageName}.html?v=${Date.now()}`);
 
@@ -38,6 +54,7 @@ async function loadPage(pageName) {
             pageContent.innerHTML = `
                 <div class="top-header">
                     <h1>Page Not Found</h1>
+                    <p>${pageName}.html not found</p>
                 </div>
             `;
             return;
@@ -45,40 +62,43 @@ async function loadPage(pageName) {
 
         const html = await response.text();
 
-        /* clear old content */
-        pageContent.innerHTML = "";
-
-        /* inject new content */
         pageContent.innerHTML = html;
 
         loadPageCSS(pageName);
 
         setTimeout(() => {
             loadPageScript(pageName);
-        }, 50);
+        }, 100);
+
+        setActiveMenu(pageName);
+
+        /* Update URL */
+        if (updateURL) {
+            history.pushState(
+                { page: pageName },
+                "",
+                `index.html?page=${pageName}`
+            );
+        }
 
     } catch (error) {
+        console.error(error);
+
         pageContent.innerHTML = `
             <div class="top-header">
-                <h1>Error</h1>
+                <h1>Error Loading Page</h1>
                 <p>${error.message}</p>
             </div>
         `;
     }
 }
 
-/* Navigation */
+/* Sidebar click */
 menuItems.forEach(item => {
     item.addEventListener("click", function (e) {
         e.preventDefault();
 
         const page = this.dataset.page;
-
-        menuItems.forEach(menu =>
-            menu.classList.remove("active")
-        );
-
-        this.classList.add("active");
 
         if (page === "logout") {
             localStorage.clear();
@@ -95,9 +115,18 @@ menuItems.forEach(item => {
             pageContent.innerHTML = `
                 <div class="top-header">
                     <h1>${this.querySelector("span").textContent}</h1>
-                    <p>Coming soon...</p>
+                    <p>Module coming soon...</p>
                 </div>
             `;
+
+            history.pushState(
+                { page },
+                "",
+                `index.html?page=${page}`
+            );
+
+            setActiveMenu(page);
+
             return;
         }
 
@@ -105,5 +134,14 @@ menuItems.forEach(item => {
     });
 });
 
-/* Initial */
-loadPage("dashboard");
+/* Browser back/forward */
+window.addEventListener("popstate", function (event) {
+    const page = event.state?.page || "dashboard";
+    loadPage(page, false);
+});
+
+/* Initial load from URL */
+const params = new URLSearchParams(window.location.search);
+const currentPage = params.get("page") || "dashboard";
+
+loadPage(currentPage, false);
