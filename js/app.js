@@ -1,88 +1,109 @@
-const employeeForm = document.getElementById("employeeForm");
-const employeeTableBody = document.getElementById("employeeTableBody");
+const pageContent = document.getElementById("pageContent");
+const menuItems = document.querySelectorAll(".menu-item");
 
-let employees = JSON.parse(localStorage.getItem("employees")) || [];
+/* Load CSS */
+function loadPageCSS(pageName) {
+    const oldCSS = document.getElementById("dynamic-page-css");
+    if (oldCSS) oldCSS.remove();
 
-/* Add Employee */
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = `css/${pageName}.css?v=${Date.now()}`;
+    css.id = "dynamic-page-css";
 
-employeeForm.addEventListener("submit", function(e) {
+    document.head.appendChild(css);
+}
 
-    e.preventDefault();
+/* Load JS safely */
+function loadPageScript(pageName) {
+    const oldScript = document.getElementById("dynamic-page-script");
 
-    const empId = document.getElementById("empId").value;
-    const empName = document.getElementById("empName").value;
-    const empRole = document.getElementById("empRole").value;
-    const empDept = document.getElementById("empDept").value;
+    if (oldScript) {
+        oldScript.remove();
+    }
 
-    const employee = {
-        id: empId,
-        name: empName,
-        role: empRole,
-        department: empDept
-    };
+    const script = document.createElement("script");
+    script.src = `js/${pageName}.js?v=${Date.now()}`;
+    script.id = "dynamic-page-script";
 
-    employees.push(employee);
+    document.body.appendChild(script);
+}
 
-    localStorage.setItem("employees", JSON.stringify(employees));
+/* Load HTML */
+async function loadPage(pageName) {
+    try {
+        const response = await fetch(`pages/${pageName}.html?v=${Date.now()}`);
 
-    displayEmployees();
+        if (!response.ok) {
+            pageContent.innerHTML = `
+                <div class="top-header">
+                    <h1>Page Not Found</h1>
+                </div>
+            `;
+            return;
+        }
 
-    employeeForm.reset();
+        const html = await response.text();
+
+        /* clear old content */
+        pageContent.innerHTML = "";
+
+        /* inject new content */
+        pageContent.innerHTML = html;
+
+        loadPageCSS(pageName);
+
+        setTimeout(() => {
+            loadPageScript(pageName);
+        }, 50);
+
+    } catch (error) {
+        pageContent.innerHTML = `
+            <div class="top-header">
+                <h1>Error</h1>
+                <p>${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+/* Navigation */
+menuItems.forEach(item => {
+    item.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const page = this.dataset.page;
+
+        menuItems.forEach(menu =>
+            menu.classList.remove("active")
+        );
+
+        this.classList.add("active");
+
+        if (page === "logout") {
+            localStorage.clear();
+            location.reload();
+            return;
+        }
+
+        if (
+            page === "leave" ||
+            page === "ot" ||
+            page === "reports" ||
+            page === "settings"
+        ) {
+            pageContent.innerHTML = `
+                <div class="top-header">
+                    <h1>${this.querySelector("span").textContent}</h1>
+                    <p>Coming soon...</p>
+                </div>
+            `;
+            return;
+        }
+
+        loadPage(page);
+    });
 });
 
-/* Display Employees */
-
-function displayEmployees() {
-
-    employeeTableBody.innerHTML = "";
-
-    employees.forEach((employee, index) => {
-
-        const row = `
-            <tr>
-                <td>${employee.id}</td>
-                <td>${employee.name}</td>
-                <td>${employee.role}</td>
-                <td>${employee.department}</td>
-                <td>
-                    <button onclick="deleteEmployee(${index})">
-                        Delete
-                    </button>
-                </td>
-            </tr>
-        `;
-
-        employeeTableBody.innerHTML += row;
-    });
-
-    updateDashboard();
-}
-
-/* Delete Employee */
-
-function deleteEmployee(index) {
-
-    employees.splice(index, 1);
-
-    localStorage.setItem("employees", JSON.stringify(employees));
-
-    displayEmployees();
-}
-
-/* Dashboard Counts */
-
-
-function updateDashboard() {
-
-    document.getElementById("totalEmployees").innerText = employees.length;
-
-    document.getElementById("presentCount").innerText = employees.length;
-
-    document.getElementById("absentCount").innerText = 0;
-
-    document.getElementById("halfdayCount").innerText = 0;
-}
-
-/* Initial Load */
-
-displayEmployees();
+/* Initial */
+loadPage("dashboard");

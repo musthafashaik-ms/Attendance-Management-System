@@ -1,131 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Management System</title>
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
+    <!-- Icons -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- CSS -->
+    <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
-
 </head>
-
 <body>
 
-<div class="dashboard-container">
+<div class="app-container">
 
-    <!-- SIDEBAR -->
+    <!-- Permanent Sidebar -->
     <aside class="sidebar">
-
-        <!-- LOGO -->
         <div class="logo">
-
-            <div class="logo-icon">
-                <i class="fa-solid fa-users"></i>
-            </div>
-
-            <div class="logo-text">
-                <h2>Attendance</h2>
-                <p>Management System</p>
-            </div>
-
+            <i class="fa-solid fa-users"></i>
+            <span>Attendance Management</span>
         </div>
 
-        <!-- MENU -->
         <nav class="sidebar-menu">
 
-            <a href="dashboard.html"
-               class="menu-item active">
-
+            <a href="#" class="menu-item active" data-page="dashboard">
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>Dashboard</span>
-
             </a>
 
-            <a href="attendance.html"
-               class="menu-item">
+            <a href="#" class="menu-item" data-page="employees">
+                <i class="fa-solid fa-users"></i>
+                <span>Staff Management</span>
+            </a>
 
-                <i class="fa-solid fa-calendar-check"></i>
+            <a href="#" class="menu-item" data-page="attendance">
+                <i class="fa-solid fa-calendar-days"></i>
                 <span>Attendance</span>
-
             </a>
 
-            <a href="credits.html"
-               class="menu-item">
-
+            <a href="#" class="menu-item" data-page="leave">
                 <i class="fa-solid fa-wallet"></i>
                 <span>Leave Credits</span>
-
             </a>
 
-            <a href="ot-pay.html"
-               class="menu-item">
-
-                <i class="fa-solid fa-money-bill-wave"></i>
-                <span>OT/Pay Records</span>
-
+            <a href="#" class="menu-item" data-page="ot">
+                <i class="fa-solid fa-money-check-dollar"></i>
+                <span>OT / Pay Records</span>
             </a>
 
-            <a href="reports.html"
-               class="menu-item">
-
+            <a href="#" class="menu-item" data-page="reports">
                 <i class="fa-solid fa-file-lines"></i>
                 <span>Reports</span>
-
             </a>
 
-            <a href="settings.html"
-               class="menu-item">
-
+            <a href="#" class="menu-item" data-page="settings">
                 <i class="fa-solid fa-gear"></i>
                 <span>Settings</span>
-
             </a>
 
-            <a href="#"
-               class="menu-item logout-btn">
-
+            <a href="#" class="menu-item" data-page="logout">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Logout</span>
-
             </a>
 
         </nav>
-
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- Dynamic Content Area -->
     <main class="main-content">
-
-        <div class="welcome-box">
-
-            <h1>
-                Welcome to Attendance Management System
-            </h1>
-
-            <p>
-                Manage attendance, leave credits,
-                reports, and employee records efficiently.
-            </p>
-
+        <div id="pageContent">
+            <!-- Pages load here -->
         </div>
-
     </main>
 
 </div>
 
+<script src="js/app.js"></script>
 </body>
-
 </html>

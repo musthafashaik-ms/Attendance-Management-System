@@ -1,0 +1,169 @@
+<div class="top-header">
+    <div>
+        <h1>Employee Attendance Dashboard</h1>
+        <p>Manage employee attendance dynamically</p>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<section class="summary-cards">
+
+    <div class="summary-card green">
+        <div class="card-icon">
+            <i class="fa-solid fa-user-check"></i>
+        </div>
+        <div class="card-info">
+            <span>PRESENT</span>
+            <h2 id="presentCount">0</h2>
+        </div>
+    </div>
+
+    <div class="summary-card orange">
+        <div class="card-icon">
+            <i class="fa-solid fa-clock"></i>
+        </div>
+        <div class="card-info">
+            <span>HALF DAY</span>
+            <h2 id="halfDayCount">0</h2>
+        </div>
+    </div>
+
+    <div class="summary-card red">
+        <div class="card-icon">
+            <i class="fa-solid fa-user-xmark"></i>
+        </div>
+        <div class="card-info">
+            <span>LEAVE</span>
+            <h2 id="leaveCount">0</h2>
+        </div>
+    </div>
+
+    <div class="summary-card purple">
+        <div class="card-icon">
+            <i class="fa-solid fa-calendar-xmark"></i>
+        </div>
+        <div class="card-info">
+            <span>WEEK OFF</span>
+            <h2 id="weekOffCount">0</h2>
+        </div>
+    </div>
+
+    <div class="summary-card blue">
+        <div class="card-icon">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="card-info">
+            <span>TOTAL EMPLOYEES</span>
+            <h2 id="totalEmployees">0</h2>
+        </div>
+    </div>
+
+</section>
+
+<!-- Attendance Table -->
+<section class="attendance-section">
+    <div class="section-header">
+        <h3>Employee Attendance Overview</h3>
+        <input type="date" id="dateFilter">
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Login Time</th>
+                    <th>Logout Time</th>
+                    <th>Working Hrs</th>
+                    <th>Status</th>
+                    <th>Leave Credits</th>
+                </tr>
+            </thead>
+
+            <tbody id="attendanceTable"></tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Bottom Widgets -->
+<section class="bottom-widgets">
+
+    <div class="widget">
+        <div class="widget-header">
+            <h3>Leave Credits Summary</h3>
+        </div>
+
+        <div class="credit-summary">
+            <div class="credit-circle">
+                <span id="totalCredits">0</span>
+                <small>Total Credits</small>
+            </div>
+
+            <div class="credit-stats">
+                <p>Positive Credits: <span id="positiveCredits">0</span></p>
+                <p>Zero Credits: <span id="zeroCredits">0</span></p>
+                <p>Negative Credits: <span id="negativeCredits">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="widget">
+        <div class="widget-header">
+            <h3>Negative Credits Alert</h3>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Emp ID</th>
+                        <th>Name</th>
+                        <th>Credits</th>
+                    </tr>
+                </thead>
+
+                <tbody id="negativeCreditTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="widget">
+        <div class="widget-header">
+            <h3>OT / Pay Records</h3>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Emp ID</th>
+                        <th>Date</th>
+                        <th>OT Hours</th>
+                        <th>Mode</th>
+                    </tr>
+                </thead>
+
+                <tbody id="otTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+<!-- Footer -->
+<footer class="dashboard-footer">
+    <div class="footer-left">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="systemUpdate">
+            System is up to date. Last updated: --
+        </span>
+    </div>
+
+    <div class="footer-right" id="negativeAlert" style="display:none;">
+        <span></span>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+</footer>

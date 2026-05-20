@@ -10,12 +10,10 @@ const logoutTimeInput = document.getElementById("logoutTime");
 const statusInput = document.getElementById("status");
 const leaveCreditsInput = document.getElementById("leaveCredits");
 
-const employeeKey = "employees";
-const attendanceKey = "attendanceRecords";
-
+let employeeKey = "employees";
 let editIndex = null;
 
-/* Load data */
+/* Helpers */
 function getStorageData(key) {
     return JSON.parse(localStorage.getItem(key)) || [];
 }
@@ -24,7 +22,7 @@ function saveStorageData(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
 }
 
-/* Calculate working hours */
+/* Working Hours */
 function calculateWorkingHours(login, logout) {
     if (!login || !logout) return "-";
 
@@ -33,7 +31,6 @@ function calculateWorkingHours(login, logout) {
 
     const loginMinutes = lh * 60 + lm;
     const logoutMinutes = oh * 60 + om;
-
     const diff = logoutMinutes - loginMinutes;
 
     if (diff <= 0) return "-";
@@ -44,7 +41,7 @@ function calculateWorkingHours(login, logout) {
     return `${hours}h ${mins}m`;
 }
 
-/* Status badge */
+/* Status Badge */
 function getStatusBadge(status) {
     switch (status) {
         case "Present":
@@ -56,14 +53,26 @@ function getStatusBadge(status) {
         case "Week Off":
             return `<span class="status weekoff">Week Off</span>`;
         default:
-            return status;
+            return `<span class="status absent">Absent</span>`;
     }
 }
 
-/* Render table */
+/* Render Employee Table */
 function renderEmployees() {
     const employees = getStorageData(employeeKey);
+
     employeeTable.innerHTML = "";
+
+    if (employees.length === 0) {
+        employeeTable.innerHTML = `
+            <tr>
+                <td colspan="10" style="text-align:center;">
+                    No employees found
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
     employees.forEach((emp, index) => {
         employeeTable.innerHTML += `
@@ -93,17 +102,11 @@ function renderEmployees() {
     });
 }
 
-/* Add / Update employee */
+/* Save Employee */
 employeeForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const employees = getStorageData(employeeKey);
-    const attendance = getStorageData(attendanceKey);
-
-    const workingHours = calculateWorkingHours(
-        loginTimeInput.value,
-        logoutTimeInput.value
-    );
 
     const employeeData = {
         empId: empIdInput.value.trim(),
@@ -112,41 +115,37 @@ employeeForm.addEventListener("submit", function (e) {
         department: empDepartmentInput.value.trim(),
         loginTime: loginTimeInput.value,
         logoutTime: logoutTimeInput.value,
-        workingHours,
+        workingHours: calculateWorkingHours(
+            loginTimeInput.value,
+            logoutTimeInput.value
+        ),
         status: statusInput.value,
         credits: Number(leaveCreditsInput.value)
     };
 
-    const attendanceData = {
-        empId: empIdInput.value.trim(),
-        date: new Date().toISOString().split("T")[0],
-        loginTime: loginTimeInput.value,
-        logoutTime: logoutTimeInput.value,
-        status: statusInput.value
-    };
-
     if (editIndex !== null) {
         employees[editIndex] = employeeData;
-
-        const attendanceIndex = attendance.findIndex(
-            a => a.empId === employeeData.empId
-        );
-
-        if (attendanceIndex !== -1) {
-            attendance[attendanceIndex] = attendanceData;
-        }
-
         editIndex = null;
     } else {
+        const exists = employees.find(
+            emp => emp.empId === employeeData.empId
+        );
+
+        if (exists) {
+            alert("Employee ID already exists");
+            return;
+        }
+
         employees.push(employeeData);
-        attendance.push(attendanceData);
     }
 
     saveStorageData(employeeKey, employees);
-    saveStorageData(attendanceKey, attendance);
 
     employeeForm.reset();
+
     renderEmployees();
+
+    alert("Employee saved successfully!");
 });
 
 /* Edit */
@@ -168,24 +167,20 @@ function editEmployee(index) {
 
 /* Delete */
 function deleteEmployee(index) {
-    if (!confirm("Delete this employee?")) return;
+    if (!confirm("Delete employee?")) return;
 
     const employees = getStorageData(employeeKey);
-    const attendance = getStorageData(attendanceKey);
-
-    const empId = employees[index].empId;
 
     employees.splice(index, 1);
 
-    const updatedAttendance = attendance.filter(
-        a => a.empId !== empId
-    );
-
     saveStorageData(employeeKey, employees);
-    saveStorageData(attendanceKey, updatedAttendance);
 
     renderEmployees();
 }
 
-/* Load */
+/* Global */
+window.editEmployee = editEmployee;
+window.deleteEmployee = deleteEmployee;
+
+/* Init */
 renderEmployees();

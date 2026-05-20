@@ -1,6 +1,6 @@
-const employeeKey = "employees";
-const otKey = "otRecords";
+let employeeKey = "employees";
 
+/* Elements */
 const attendanceTable = document.getElementById("attendanceTable");
 const negativeCreditTable = document.getElementById("negativeCreditTable");
 const otTable = document.getElementById("otTable");
@@ -25,28 +25,6 @@ function getStorageData(key) {
     return JSON.parse(localStorage.getItem(key)) || [];
 }
 
-function formatDate(date) {
-    return new Date(date).toISOString().split("T")[0];
-}
-
-function calculateWorkingHours(login, logout) {
-    if (!login || !logout) return "-";
-
-    const [lh, lm] = login.split(":").map(Number);
-    const [oh, om] = logout.split(":").map(Number);
-
-    const loginMinutes = lh * 60 + lm;
-    const logoutMinutes = oh * 60 + om;
-    const diff = logoutMinutes - loginMinutes;
-
-    if (diff <= 0) return "-";
-
-    const hours = Math.floor(diff / 60);
-    const mins = diff % 60;
-
-    return `${hours}h ${mins}m`;
-}
-
 function getStatusBadge(status) {
     switch (status) {
         case "Present":
@@ -67,12 +45,9 @@ function updateSystemTime() {
         `System is up to date. Last updated: ${new Date().toLocaleString()}`;
 }
 
-/* Main Dashboard Render */
+/* Render Dashboard */
 function renderDashboard() {
     const employees = getStorageData(employeeKey);
-    const otRecords = getStorageData(otKey);
-
-    const selectedDate = dateFilter.value || formatDate(new Date());
 
     attendanceTable.innerHTML = "";
     negativeCreditTable.innerHTML = "";
@@ -88,24 +63,24 @@ function renderDashboard() {
     let zeroCredits = 0;
     let negativeCredits = 0;
 
+    if (employees.length === 0) {
+        attendanceTable.innerHTML = `
+            <tr>
+                <td colspan="9" style="text-align:center;">
+                    No employee records found
+                </td>
+            </tr>
+        `;
+    }
+
     employees.forEach(emp => {
-        const empDate = emp.date || formatDate(new Date());
-
-        if (empDate !== selectedDate) return;
-
         const status = emp.status || "Absent";
-        const loginTime = emp.loginTime || "-";
-        const logoutTime = emp.logoutTime || "-";
-        const workingHours =
-            emp.workingHours ||
-            calculateWorkingHours(loginTime, logoutTime);
+        const credits = Number(emp.credits || 0);
 
         if (status === "Present") presentCount++;
         else if (status === "Half Day") halfDayCount++;
         else if (status === "Leave") leaveCount++;
         else if (status === "Week Off") weekOffCount++;
-
-        const credits = Number(emp.credits || 0);
 
         totalCredits += credits;
 
@@ -117,20 +92,19 @@ function renderDashboard() {
             <tr>
                 <td>${emp.empId}</td>
                 <td>${emp.name}</td>
-                <td>${emp.role || "-"}</td>
-                <td>${emp.department || "-"}</td>
-                <td>${loginTime}</td>
-                <td>${logoutTime}</td>
-                <td>${workingHours}</td>
+                <td>${emp.role}</td>
+                <td>${emp.department}</td>
+                <td>${emp.loginTime}</td>
+                <td>${emp.logoutTime}</td>
+                <td>${emp.workingHours}</td>
                 <td>${getStatusBadge(status)}</td>
                 <td>${credits}</td>
             </tr>
         `;
     });
 
-    /* Negative Credits Table */
     employees
-        .filter(emp => Number(emp.credits || 0) < 0)
+        .filter(emp => Number(emp.credits) < 0)
         .forEach(emp => {
             negativeCreditTable.innerHTML += `
                 <tr>
@@ -141,20 +115,6 @@ function renderDashboard() {
             `;
         });
 
-    /* OT Records */
-    otRecords.forEach(record => {
-        otTable.innerHTML += `
-            <tr>
-                <td>${record.empId}</td>
-                <td>${record.date}</td>
-                <td>${record.hours}</td>
-                <td>${record.mode}</td>
-                <td><i class="fa-solid fa-circle-info"></i></td>
-            </tr>
-        `;
-    });
-
-    /* Summary Cards */
     totalEmployeesEl.textContent = employees.length;
     presentCountEl.textContent = presentCount;
     halfDayCountEl.textContent = halfDayCount;
@@ -166,11 +126,10 @@ function renderDashboard() {
     zeroCreditsEl.textContent = zeroCredits;
     negativeCreditsEl.textContent = negativeCredits;
 
-    /* Negative Alert */
     if (negativeCredits > 0) {
         negativeAlertEl.style.display = "flex";
         negativeAlertEl.querySelector("span").textContent =
-            `${negativeCredits} Employee${negativeCredits > 1 ? "s" : ""} have Negative Credits`;
+            `${negativeCredits} Employees have Negative Credits`;
     } else {
         negativeAlertEl.style.display = "none";
     }
@@ -179,11 +138,5 @@ function renderDashboard() {
 }
 
 /* Init */
-dateFilter.value = formatDate(new Date());
-systemUpdateEl.textContent = "System is up to date. Last updated: --";
-
-dateFilter.addEventListener("change", renderDashboard);
-window.addEventListener("storage", renderDashboard);
-
 renderDashboard();
 setInterval(updateSystemTime, 1000);

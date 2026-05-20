@@ -1,79 +1,4 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background: #f3f5f9;
-    color: #1e293b;
-}
-
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-    width: 260px;
-    background: #082b63;
-    color: white;
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 30px;
-}
-
-.logo i {
-    font-size: 22px;
-}
-
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    color: #dce7ff;
-    text-decoration: none;
-    padding: 12px 14px;
-    border-radius: 10px;
-    transition: 0.3s ease;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.menu-item:hover,
-.menu-item.active {
-    background: #0d4cb3;
-    color: white;
-}
-
-.menu-item i {
-    width: 18px;
-}
-
-/* Main */
-.main-content {
-    flex: 1;
-    padding: 20px;
-}
-
-/* Header */
+/* HEADER */
 .top-header {
     background: white;
     padding: 20px 24px;
@@ -85,14 +10,16 @@ body {
 .top-header h1 {
     font-size: 24px;
     font-weight: 700;
+    color: #0f172a;
 }
 
 .top-header p {
     color: #64748b;
     margin-top: 6px;
+    font-size: 14px;
 }
 
-/* Cards */
+/* CARDS */
 .form-card,
 .table-card {
     background: white;
@@ -107,9 +34,10 @@ body {
     margin-bottom: 20px;
     font-size: 20px;
     font-weight: 700;
+    color: #0f172a;
 }
 
-/* Form */
+/* FORM */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -127,13 +55,16 @@ select {
     font-size: 14px;
     outline: none;
     transition: 0.3s;
+    background: white;
 }
 
 input:focus,
 select:focus {
     border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+/* BUTTON */
 .primary-btn {
     background: #2563eb;
     color: white;
@@ -150,7 +81,7 @@ select:focus {
     background: #1d4ed8;
 }
 
-/* Table */
+/* TABLE */
 .table-wrapper {
     overflow-x: auto;
 }
@@ -177,13 +108,14 @@ tbody td {
     padding: 14px;
     font-size: 14px;
     border-bottom: 1px solid #edf2f7;
+    color: #334155;
 }
 
 tbody tr:hover {
     background: #f9fbff;
 }
 
-/* Status */
+/* STATUS */
 .status {
     padding: 6px 12px;
     border-radius: 20px;
@@ -212,7 +144,12 @@ tbody tr:hover {
     color: #7c3aed;
 }
 
-/* Buttons */
+.absent {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* ACTION BUTTONS */
 .action-btn {
     border: none;
     padding: 8px 12px;
@@ -220,6 +157,7 @@ tbody tr:hover {
     cursor: pointer;
     font-size: 13px;
     margin-right: 6px;
+    transition: 0.3s;
 }
 
 .edit-btn {
@@ -227,30 +165,41 @@ tbody tr:hover {
     color: white;
 }
 
+.edit-btn:hover {
+    background: #d97706;
+}
+
 .delete-btn {
     background: #ef4444;
     color: white;
 }
 
-/* Responsive */
+.delete-btn:hover {
+    background: #dc2626;
+}
+
+/* RESPONSIVE */
 @media (max-width: 1200px) {
     .form-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 900px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-    }
-}
-
 @media (max-width: 768px) {
     .form-grid {
         grid-template-columns: 1fr;
+    }
+
+    .top-header {
+        padding: 18px;
+    }
+
+    .form-card,
+    .table-card {
+        padding: 18px;
+    }
+
+    .table-wrapper {
+        overflow-x: scroll;
     }
 }

@@ -1,0 +1,105 @@
+<div class="top-header">
+    <div>
+        <h1>Staff Management</h1>
+        <p>Add and manage employee details</p>
+    </div>
+</div>
+
+<!-- Employee Form -->
+<section class="form-card">
+    <h2>Add Employee</h2>
+
+    <form id="employeeForm">
+        <div class="form-grid">
+
+            <input
+                type="text"
+                id="empId"
+                placeholder="Employee ID"
+                required
+            >
+
+            <input
+                type="text"
+                id="empName"
+                placeholder="Employee Name"
+                required
+            >
+
+            <input
+                type="text"
+                id="empRole"
+                placeholder="Role"
+                required
+            >
+
+            <input
+                type="text"
+                id="empDepartment"
+                placeholder="Department"
+                required
+            >
+
+            <input
+                type="time"
+                id="loginTime"
+                required
+            >
+
+            <input
+                type="time"
+                id="logoutTime"
+                required
+            >
+
+            <select id="status" required>
+                <option value="">Select Status</option>
+                <option value="Present">Present</option>
+                <option value="Half Day">Half Day</option>
+                <option value="Leave">Leave</option>
+                <option value="Week Off">Week Off</option>
+            </select>
+
+            <input
+                type="number"
+                id="leaveCredits"
+                placeholder="Leave Credits"
+                required
+            >
+
+        </div>
+
+        <button type="submit" class="primary-btn">
+            <i class="fa-solid fa-plus"></i>
+            Save Employee
+        </button>
+    </form>
+</section>
+
+<!-- Employee Table -->
+<section class="table-card">
+    <div class="table-header">
+        <h2>Employee Records</h2>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Login Time</th>
+                    <th>Logout Time</th>
+                    <th>Working Hrs</th>
+                    <th>Status</th>
+                    <th>Leave Credits</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="employeeTable"></tbody>
+        </table>
+    </div>
+</section>
