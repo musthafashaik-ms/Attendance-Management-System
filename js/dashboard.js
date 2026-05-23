@@ -2,6 +2,8 @@
     const EMPLOYEE_KEY = "employees";
     const ATTENDANCE_KEY = "attendanceRecords";
 
+    let creditsChart = null;
+
     function getEmployees() {
         return JSON.parse(localStorage.getItem(EMPLOYEE_KEY)) || [];
     }
@@ -16,11 +18,11 @@
             "Half Day": "halfday",
             "Leave": "leave",
             "Week Off": "weekoff",
-            "Absent": "leave"
+            "Absent": "absent"
         };
 
         return `
-            <span class="status ${badges[status]}">
+            <span class="status ${badges[status] || "absent"}">
                 ${status}
             </span>
         `;
@@ -35,6 +37,55 @@
             `System is up to date. Last updated: ${new Date().toLocaleString()}`;
     }
 
+    function renderCreditsChart(positive, zero, negative, totalCredits) {
+        const canvas = document.getElementById("creditsChart");
+
+        if (!canvas || typeof Chart === "undefined") return;
+
+        if (creditsChart) {
+            creditsChart.destroy();
+        }
+
+        creditsChart = new Chart(canvas, {
+            type: "doughnut",
+            data: {
+                datasets: [{
+                    data: [positive, zero, negative],
+                    backgroundColor: [
+                        "#16a34a",
+                        "#d1d5db",
+                        "#ef4444"
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "72%",
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const totalEmployees = positive + zero + negative || 1;
+
+        document.getElementById("positivePercent").textContent =
+            Math.round((positive / totalEmployees) * 100);
+
+        document.getElementById("zeroPercent").textContent =
+            Math.round((zero / totalEmployees) * 100);
+
+        document.getElementById("negativePercent").textContent =
+            Math.round((negative / totalEmployees) * 100);
+
+        document.getElementById("totalCredits").textContent =
+            totalCredits.toFixed(1);
+    }
+
     function renderDashboard() {
         const attendanceTable = document.getElementById("attendanceTable");
         const negativeCreditTable = document.getElementById("negativeCreditTable");
@@ -45,7 +96,6 @@
         const employees = getEmployees();
         const attendanceRecords = getAttendanceRecords();
         const selectedDate = dateFilter.value;
-
         const dayAttendance = attendanceRecords[selectedDate] || [];
 
         attendanceTable.innerHTML = "";
@@ -61,25 +111,46 @@
         let zeroCredits = 0;
         let negativeCredits = 0;
 
-        employees.forEach(emp => {
-            const record = dayAttendance.find(r => r.empId === emp.empId);
+        if (dayAttendance.length === 0) {
+            attendanceTable.innerHTML = `
+                <tr>
+                    <td colspan="9" style="text-align:center;">
+                        No attendance records found
+                    </td>
+                </tr>
+            `;
+        }
 
-            const status = record?.status || "Absent";
-            const loginTime = record?.loginTime || "-";
-            const logoutTime = record?.logoutTime || "-";
-            const workingHours = record?.workingHours || "-";
+        dayAttendance.forEach(emp => {
             const credits = Number(emp.credits || 0);
 
-            if (status === "Present") presentCount++;
-            else if (status === "Half Day") halfDayCount++;
-            else if (status === "Leave") leaveCount++;
-            else if (status === "Week Off") weekOffCount++;
+            switch (emp.status) {
+                case "Present":
+                    presentCount++;
+                    break;
+
+                case "Half Day":
+                    halfDayCount++;
+                    break;
+
+                case "Leave":
+                    leaveCount++;
+                    break;
+
+                case "Week Off":
+                    weekOffCount++;
+                    break;
+            }
 
             totalCredits += credits;
 
-            if (credits > 0) positiveCredits++;
-            else if (credits === 0) zeroCredits++;
-            else negativeCredits++;
+            if (credits > 0) {
+                positiveCredits++;
+            } else if (credits === 0) {
+                zeroCredits++;
+            } else {
+                negativeCredits++;
+            }
 
             attendanceTable.innerHTML += `
                 <tr>
@@ -87,26 +158,38 @@
                     <td>${emp.name}</td>
                     <td>${emp.role}</td>
                     <td>${emp.department}</td>
-                    <td>${loginTime}</td>
-                    <td>${logoutTime}</td>
-                    <td>${workingHours}</td>
-                    <td>${getStatusBadge(status)}</td>
-                    <td>${credits}</td>
+                    <td>${emp.loginTime || "-"}</td>
+                    <td>${emp.logoutTime || "-"}</td>
+                    <td>${emp.workingHours || "-"}</td>
+                    <td>${getStatusBadge(emp.status)}</td>
+                    <td>${credits.toFixed(1)}</td>
                 </tr>
             `;
         });
 
-        employees
-            .filter(emp => Number(emp.credits) < 0)
-            .forEach(emp => {
+        const negativeEmployees = employees.filter(
+            emp => Number(emp.credits) < 0
+        );
+
+        if (negativeEmployees.length === 0) {
+            negativeCreditTable.innerHTML = `
+                <tr>
+                    <td colspan="3" style="text-align:center;">
+                        No negative credits
+                    </td>
+                </tr>
+            `;
+        } else {
+            negativeEmployees.forEach(emp => {
                 negativeCreditTable.innerHTML += `
                     <tr>
                         <td>${emp.empId}</td>
                         <td>${emp.name}</td>
-                        <td>${emp.credits}</td>
+                        <td>${Number(emp.credits).toFixed(1)}</td>
                     </tr>
                 `;
             });
+        }
 
         document.getElementById("totalEmployees").textContent = employees.length;
         document.getElementById("presentCount").textContent = presentCount;
@@ -114,10 +197,16 @@
         document.getElementById("leaveCount").textContent = leaveCount;
         document.getElementById("weekOffCount").textContent = weekOffCount;
 
-        document.getElementById("totalCredits").textContent = totalCredits;
         document.getElementById("positiveCredits").textContent = positiveCredits;
         document.getElementById("zeroCredits").textContent = zeroCredits;
         document.getElementById("negativeCredits").textContent = negativeCredits;
+
+        renderCreditsChart(
+            positiveCredits,
+            zeroCredits,
+            negativeCredits,
+            totalCredits
+        );
 
         const negativeAlert = document.getElementById("negativeAlert");
 
@@ -134,6 +223,7 @@
 
     function initDashboard() {
         const dateFilter = document.getElementById("dateFilter");
+
         if (!dateFilter) return;
 
         const today = new Date().toISOString().split("T")[0];
@@ -145,5 +235,6 @@
     }
 
     initDashboard();
+
     setInterval(updateSystemTime, 1000);
 })();

@@ -10,49 +10,68 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
 
-    function calculateWorkingHours(login, logout) {
-        if (!login || !logout) return "-";
-
-        const [lh, lm] = login.split(":").map(Number);
-        const [oh, om] = logout.split(":").map(Number);
-
-        const diff = (oh * 60 + om) - (lh * 60 + lm);
-
-        if (diff <= 0) return "-";
-
-        const hrs = Math.floor(diff / 60);
-        const mins = diff % 60;
-
-        return `${hrs}h ${mins}m`;
+    function formatCredits(credits) {
+        return Number(credits).toFixed(1);
     }
 
-    function getStatusBadge(status) {
-        const badges = {
-            "Present": "present",
-            "Half Day": "halfday",
-            "Leave": "leave",
-            "Week Off": "weekoff"
-        };
+    function calculateExperience(joiningDate) {
+        if (!joiningDate) return "";
 
-        return `
-            <span class="status ${badges[status] || 'absent'}">
-                ${status}
-            </span>
-        `;
+        const joinDate = new Date(joiningDate);
+        const today = new Date();
+
+        let years = today.getFullYear() - joinDate.getFullYear();
+        let months = today.getMonth() - joinDate.getMonth();
+
+        if (today.getDate() < joinDate.getDate()) {
+            months--;
+        }
+
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        if (years > 0 && months > 0) {
+            return `${years} Years ${months} Months`;
+        }
+
+        if (years > 0) {
+            return `${years} Years`;
+        }
+
+        if (months > 0) {
+            return `${months} Months`;
+        }
+
+        return "0 Months";
+    }
+
+    function getTodayDate() {
+        return new Date().toISOString().split("T")[0];
     }
 
     function renderEmployees() {
         const employeeTable = document.getElementById("employeeTable");
         if (!employeeTable) return;
 
-        const employees = getEmployees();
+        let employees = getEmployees();
+
+        /* auto update present date + experience permanently */
+        employees = employees.map(emp => ({
+            ...emp,
+            presentDate: getTodayDate(),
+            experience: calculateExperience(emp.joiningDate)
+        }));
+
+        saveEmployees(employees);
 
         employeeTable.innerHTML = "";
 
         if (employees.length === 0) {
             employeeTable.innerHTML = `
                 <tr>
-                    <td colspan="10" style="text-align:center;">
+                    <td colspan="9" style="text-align:center;">
                         No employees found
                     </td>
                 </tr>
@@ -67,11 +86,10 @@
                     <td>${emp.name}</td>
                     <td>${emp.role}</td>
                     <td>${emp.department}</td>
-                    <td>${emp.loginTime}</td>
-                    <td>${emp.logoutTime}</td>
-                    <td>${emp.workingHours}</td>
-                    <td>${getStatusBadge(emp.status)}</td>
-                    <td>${emp.credits}</td>
+                    <td>${formatCredits(emp.credits)}</td>
+                    <td>${emp.joiningDate}</td>
+                    <td>${emp.presentDate}</td>
+                    <td>${emp.experience}</td>
                     <td>
                         <button class="action-btn edit-btn"
                             onclick="editEmployee(${index})">
@@ -88,9 +106,24 @@
         });
     }
 
+    function autoFillEmployeeDetails() {
+        const joiningDateInput = document.getElementById("joiningDate");
+        const presentDateInput = document.getElementById("presentDate");
+        const experienceInput = document.getElementById("experience");
+
+        if (!joiningDateInput) return;
+
+        joiningDateInput.addEventListener("change", function () {
+            presentDateInput.value = getTodayDate();
+            experienceInput.value = calculateExperience(this.value);
+        });
+    }
+
     function initEmployeeForm() {
         const form = document.getElementById("employeeForm");
         if (!form) return;
+
+        autoFillEmployeeDetails();
 
         form.addEventListener("submit", function (e) {
             e.preventDefault();
@@ -99,10 +132,8 @@
             const empName = document.getElementById("empName").value.trim();
             const empRole = document.getElementById("empRole").value.trim();
             const empDepartment = document.getElementById("empDepartment").value.trim();
-            const loginTime = document.getElementById("loginTime").value;
-            const logoutTime = document.getElementById("logoutTime").value;
-            const status = document.getElementById("status").value;
             const credits = Number(document.getElementById("leaveCredits").value);
+            const joiningDate = document.getElementById("joiningDate").value;
 
             const employees = getEmployees();
 
@@ -111,11 +142,10 @@
                 name: empName,
                 role: empRole,
                 department: empDepartment,
-                loginTime,
-                logoutTime,
-                workingHours: calculateWorkingHours(loginTime, logoutTime),
-                status,
-                credits
+                credits,
+                joiningDate,
+                presentDate: getTodayDate(),
+                experience: calculateExperience(joiningDate)
             };
 
             if (editIndex !== null) {
@@ -136,13 +166,16 @@
 
             form.reset();
 
+            document.getElementById("presentDate").value = "";
+            document.getElementById("experience").value = "";
+
             renderEmployees();
 
             alert("Employee saved successfully");
         });
     }
 
-    window.editEmployee = function(index) {
+    window.editEmployee = function (index) {
         const employees = getEmployees();
         const emp = employees[index];
 
@@ -150,15 +183,15 @@
         document.getElementById("empName").value = emp.name;
         document.getElementById("empRole").value = emp.role;
         document.getElementById("empDepartment").value = emp.department;
-        document.getElementById("loginTime").value = emp.loginTime;
-        document.getElementById("logoutTime").value = emp.logoutTime;
-        document.getElementById("status").value = emp.status;
         document.getElementById("leaveCredits").value = emp.credits;
+        document.getElementById("joiningDate").value = emp.joiningDate;
+        document.getElementById("presentDate").value = emp.presentDate;
+        document.getElementById("experience").value = emp.experience;
 
         editIndex = index;
     };
 
-    window.deleteEmployee = function(index) {
+    window.deleteEmployee = function (index) {
         if (!confirm("Delete employee?")) return;
 
         const employees = getEmployees();

@@ -41,29 +41,30 @@
             >
 
             <input
-                type="time"
-                id="loginTime"
-                required
-            >
-
-            <input
-                type="time"
-                id="logoutTime"
-                required
-            >
-
-            <select id="status" required>
-                <option value="">Select Status</option>
-                <option value="Present">Present</option>
-                <option value="Half Day">Half Day</option>
-                <option value="Leave">Leave</option>
-                <option value="Week Off">Week Off</option>
-            </select>
-
-            <input
                 type="number"
                 id="leaveCredits"
                 placeholder="Leave Credits"
+                required
+                step="0.1"
+                min="0"
+            >
+
+            <input
+                type="date"
+                id="joiningDate"
+                required
+            >
+
+            <input
+                type="date"
+                id="presentDate"
+                required
+            >
+
+            <input
+                type="text"
+                id="experience"
+                placeholder="Total Experience (e.g. 2 Years 3 Months)"
                 required
             >
 
@@ -90,11 +91,10 @@
                     <th>Name</th>
                     <th>Role</th>
                     <th>Department</th>
-                    <th>Login Time</th>
-                    <th>Logout Time</th>
-                    <th>Working Hrs</th>
-                    <th>Status</th>
                     <th>Leave Credits</th>
+                    <th>Joining Date</th>
+                    <th>Present Date</th>
+                    <th>Total Experience</th>
                     <th>Actions</th>
                 </tr>
             </thead>

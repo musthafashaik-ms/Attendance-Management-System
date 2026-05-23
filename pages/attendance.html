@@ -5,22 +5,41 @@
     </div>
 </div>
 
+<section class="form-card">
+    <h2>Employee Attendance Records</h2>
+
+    <div class="form-grid">
+
+        <input type="date" id="attendanceDate">
+
+        <button id="saveAttendanceBtn" class="primary-btn">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Save Attendance
+        </button>
+
+        <button id="exportCsvBtn" class="primary-btn">
+            <i class="fa-solid fa-file-csv"></i>
+            Export CSV
+        </button>
+
+        <button id="exportExcelBtn" class="primary-btn">
+            <i class="fa-solid fa-file-excel"></i>
+            Export Excel
+        </button>
+
+    </div>
+</section>
+
 <section class="table-card">
     <div class="table-header">
-        <h2>Employee Attendance Records</h2>
-
-        <div style="display:flex; gap:10px; align-items:center;">
-            <input type="date" id="attendanceDate">
-            <button id="saveAttendanceBtn" class="primary-btn">
-                Save Attendance
-            </button>
-        </div>
+        <h2>Attendance Records</h2>
     </div>
 
     <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
+                    <th>Login</th>
                     <th>Emp ID</th>
                     <th>Name</th>
                     <th>Role</th>
@@ -33,7 +52,9 @@
                 </tr>
             </thead>
 
-            <tbody id="attendanceEmployeeTable"></tbody>
+            <tbody id="attendanceEmployeeTable">
+                <!-- Dynamic rows -->
+            </tbody>
         </table>
     </div>
 </section>

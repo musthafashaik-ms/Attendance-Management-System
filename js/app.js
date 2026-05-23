@@ -101,10 +101,10 @@ menuItems.forEach(item => {
         const page = this.dataset.page;
 
         if (page === "logout") {
-            localStorage.clear();
-            location.reload();
-            return;
-        }
+    alert("Logged out successfully");
+    location.href = "index.html?page=dashboard";
+    return;
+}
 
         if (
             page === "leave" ||

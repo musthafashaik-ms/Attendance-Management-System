@@ -64,7 +64,6 @@
 <section class="attendance-section">
     <div class="section-header">
         <h3>Employee Attendance Overview</h3>
-
         <input type="date" id="dateFilter">
     </div>
 
@@ -84,9 +83,7 @@
                 </tr>
             </thead>
 
-            <tbody id="attendanceTable">
-                <!-- Dynamic rows -->
-            </tbody>
+            <tbody id="attendanceTable"></tbody>
         </table>
     </div>
 </section>
@@ -94,25 +91,51 @@
 <!-- Bottom Widgets -->
 <section class="bottom-widgets">
 
+    <!-- Leave Credits Pie Chart -->
     <div class="widget">
         <div class="widget-header">
             <h3>Leave Credits Summary</h3>
+            <p>Monthly credit added by Admin: 1.5</p>
         </div>
 
-        <div class="credit-summary">
-            <div class="credit-circle">
-                <span id="totalCredits">0</span>
-                <small>Total Credits</small>
+        <div class="credit-chart-container">
+
+            <div class="chart-box">
+                <canvas id="creditsChart"></canvas>
+
+                <div class="chart-center">
+                    <span id="totalCredits">0.0</span>
+                    <small>Credits Added</small>
+                </div>
             </div>
 
             <div class="credit-stats">
-                <p>Positive Credits: <span id="positiveCredits">0</span></p>
-                <p>Zero Credits: <span id="zeroCredits">0</span></p>
-                <p>Negative Credits: <span id="negativeCredits">0</span></p>
+                <p>
+                    <span class="legend positive"></span>
+                    Positive Credits:
+                    <strong id="positiveCredits">0</strong>
+                    (<span id="positivePercent">0</span>%)
+                </p>
+
+                <p>
+                    <span class="legend zero"></span>
+                    Zero Credits:
+                    <strong id="zeroCredits">0</strong>
+                    (<span id="zeroPercent">0</span>%)
+                </p>
+
+                <p>
+                    <span class="legend negative"></span>
+                    Negative Credits:
+                    <strong id="negativeCredits">0</strong>
+                    (<span id="negativePercent">0</span>%)
+                </p>
             </div>
+
         </div>
     </div>
 
+    <!-- Negative Credit Alert -->
     <div class="widget">
         <div class="widget-header">
             <h3>Negative Credits Alert</h3>
@@ -128,9 +151,7 @@
                     </tr>
                 </thead>
 
-                <tbody id="negativeCreditTable">
-                    <!-- Dynamic rows -->
-                </tbody>
+                <tbody id="negativeCreditTable"></tbody>
             </table>
         </div>
     </div>
