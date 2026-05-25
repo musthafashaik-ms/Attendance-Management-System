@@ -1,6 +1,15 @@
 const pageContent = document.getElementById("pageContent");
 const menuItems = document.querySelectorAll(".menu-item");
 
+const EMPLOYEE_KEY = "employees";
+
+/* Initialize storage */
+function initializeStorage() {
+    if (!localStorage.getItem(EMPLOYEE_KEY)) {
+        localStorage.setItem(EMPLOYEE_KEY, JSON.stringify([]));
+    }
+}
+
 /* Remove old CSS */
 function removeDynamicCSS() {
     document.querySelectorAll(".dynamic-css").forEach(css => css.remove());
@@ -72,7 +81,6 @@ async function loadPage(pageName, updateURL = true) {
 
         setActiveMenu(pageName);
 
-        /* Update URL */
         if (updateURL) {
             history.pushState(
                 { page: pageName },
@@ -100,14 +108,20 @@ menuItems.forEach(item => {
 
         const page = this.dataset.page;
 
+        /* Logout */
         if (page === "logout") {
-    alert("Logged out successfully");
-    location.href = "index.html?page=dashboard";
-    return;
-}
+            const confirmLogout = confirm("Are you sure you want to logout?");
 
+            if (!confirmLogout) return;
+
+            sessionStorage.clear();
+
+            location.href = "index.html?page=dashboard";
+            return;
+        }
+
+        /* Coming soon modules only */
         if (
-            page === "leave" ||
             page === "ot" ||
             page === "reports" ||
             page === "settings"
@@ -126,10 +140,10 @@ menuItems.forEach(item => {
             );
 
             setActiveMenu(page);
-
             return;
         }
 
+        /* Real pages */
         loadPage(page);
     });
 });
@@ -140,7 +154,10 @@ window.addEventListener("popstate", function (event) {
     loadPage(page, false);
 });
 
-/* Initial load from URL */
+/* Start app */
+initializeStorage();
+
+/* Initial load */
 const params = new URLSearchParams(window.location.search);
 const currentPage = params.get("page") || "dashboard";
 

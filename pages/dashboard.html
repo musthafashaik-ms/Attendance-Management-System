@@ -91,7 +91,7 @@
 <!-- Bottom Widgets -->
 <section class="bottom-widgets">
 
-    <!-- Leave Credits Pie Chart -->
+    <!-- Leave Credits Summary -->
     <div class="widget">
         <div class="widget-header">
             <h3>Leave Credits Summary</h3>
@@ -99,7 +99,6 @@
         </div>
 
         <div class="credit-chart-container">
-
             <div class="chart-box">
                 <canvas id="creditsChart"></canvas>
 
@@ -109,29 +108,28 @@
                 </div>
             </div>
 
-            <div class="credit-stats">
-                <p>
-                    <span class="legend positive"></span>
-                    Positive Credits:
-                    <strong id="positiveCredits">0</strong>
-                    (<span id="positivePercent">0</span>%)
-                </p>
+           <div class="credit-stats">
+    <p>
+        <span class="legend positive"></span>
+        Positive Credits:
+        <strong id="positiveCredits">0</strong>
+        (<span id="positivePercent">0</span>%)
+    </p>
 
-                <p>
-                    <span class="legend zero"></span>
-                    Zero Credits:
-                    <strong id="zeroCredits">0</strong>
-                    (<span id="zeroPercent">0</span>%)
-                </p>
+    <p>
+        <span class="legend zero"></span>
+        Zero Credits:
+        <strong id="zeroCredits">0</strong>
+        (<span id="zeroPercent">0</span>%)
+    </p>
 
-                <p>
-                    <span class="legend negative"></span>
-                    Negative Credits:
-                    <strong id="negativeCredits">0</strong>
-                    (<span id="negativePercent">0</span>%)
-                </p>
-            </div>
-
+    <p>
+        <span class="legend negative"></span>
+        Negative Credits:
+        <strong id="negativeCredits">0</strong>
+        (<span id="negativePercent">0</span>%)
+    </p>
+</div>
         </div>
     </div>
 
@@ -152,6 +150,28 @@
                 </thead>
 
                 <tbody id="negativeCreditTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Dynamic OT / Pay Records -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3>OT / Pay Records</h3>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Emp ID</th>
+                        <th>Date</th>
+                        <th>OT Hours</th>
+                        <th>Mode</th>
+                    </tr>
+                </thead>
+
+                <tbody id="otPayTable"></tbody>
             </table>
         </div>
     </div>

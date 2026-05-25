@@ -3,7 +3,7 @@
     background: white;
     padding: 20px 24px;
     border-radius: 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     margin-bottom: 20px;
 }
 
@@ -11,6 +11,7 @@
     font-size: 24px;
     font-weight: 700;
     color: #0f172a;
+    margin: 0;
 }
 
 .top-header p {
@@ -25,13 +26,14 @@
     background: white;
     border-radius: 14px;
     padding: 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     margin-bottom: 24px;
 }
 
+/* TITLES */
 .form-card h2,
 .table-card h2 {
-    margin-bottom: 20px;
+    margin: 0 0 20px;
     font-size: 20px;
     font-weight: 700;
     color: #0f172a;
@@ -40,11 +42,12 @@
 /* FORM */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
     gap: 16px;
     margin-bottom: 20px;
 }
 
+/* INPUTS */
 input,
 select {
     width: 100%;
@@ -54,14 +57,15 @@ select {
     font-family: inherit;
     font-size: 14px;
     outline: none;
-    transition: 0.3s;
+    transition: 0.3s ease;
     background: white;
+    box-sizing: border-box;
 }
 
 input:focus,
 select:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
 /* BUTTON */
@@ -74,21 +78,30 @@ select:focus {
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
-    transition: 0.3s;
+    transition: 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .primary-btn:hover {
     background: #1d4ed8;
 }
 
-/* TABLE */
+/* TABLE CONTAINER */
 .table-wrapper {
     overflow-x: auto;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    background: white;
 }
 
+/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 1000px;
 }
 
 thead {
@@ -97,25 +110,27 @@ thead {
 
 thead th {
     padding: 14px;
-    font-size: 13px;
+    border: 1px solid #dbe2ea;
+    font-size: 14px;
     font-weight: 700;
-    color: #475569;
+    color: #334155;
     text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
 }
 
 tbody td {
-    padding: 14px;
+    padding: 16px 14px;
+    border: 1px solid #dbe2ea;
     font-size: 14px;
-    border-bottom: 1px solid #edf2f7;
     color: #334155;
+    vertical-align: middle;
 }
 
 tbody tr:hover {
     background: #f9fbff;
 }
 
-/* STATUS */
+/* STATUS BADGES */
 .status {
     padding: 6px 12px;
     border-radius: 20px;
@@ -150,14 +165,28 @@ tbody tr:hover {
 }
 
 /* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: nowrap;
+    min-width: 150px;
+}
+
 .action-btn {
     border: none;
-    padding: 8px 12px;
+    padding: 8px 14px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;
-    margin-right: 6px;
-    transition: 0.3s;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 62px;
 }
 
 .edit-btn {
@@ -176,6 +205,14 @@ tbody tr:hover {
 
 .delete-btn:hover {
     background: #dc2626;
+}
+
+/* ACTION COLUMN */
+table td:last-child,
+table th:last-child {
+    min-width: 180px;
+    white-space: nowrap;
+    text-align: center;
 }
 
 /* RESPONSIVE */
@@ -200,6 +237,10 @@ tbody tr:hover {
     }
 
     .table-wrapper {
-        overflow-x: scroll;
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 950px;
     }
 }

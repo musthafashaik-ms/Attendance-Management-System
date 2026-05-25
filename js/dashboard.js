@@ -18,11 +18,11 @@
             "Half Day": "halfday",
             "Leave": "leave",
             "Week Off": "weekoff",
-            "Absent": "absent"
+            
         };
 
         return `
-            <span class="status ${badges[status] || "absent"}">
+            <span class="status ${badges[status] || "leave"}">
                 ${status}
             </span>
         `;

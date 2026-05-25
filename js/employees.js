@@ -11,7 +11,7 @@
     }
 
     function formatCredits(credits) {
-        return Number(credits).toFixed(1);
+        return Number(credits || 0).toFixed(1);
     }
 
     function calculateExperience(joiningDate) {
@@ -57,7 +57,6 @@
 
         let employees = getEmployees();
 
-        /* auto update present date + experience permanently */
         employees = employees.map(emp => ({
             ...emp,
             presentDate: getTodayDate(),
@@ -91,15 +90,21 @@
                     <td>${emp.presentDate}</td>
                     <td>${emp.experience}</td>
                     <td>
-                        <button class="action-btn edit-btn"
-                            onclick="editEmployee(${index})">
-                            Edit
-                        </button>
+                        <div class="action-buttons">
+                            <button
+                                class="action-btn edit-btn"
+                                onclick="editEmployee(${index})"
+                            >
+                                Edit
+                            </button>
 
-                        <button class="action-btn delete-btn"
-                            onclick="deleteEmployee(${index})">
-                            Delete
-                        </button>
+                            <button
+                                class="action-btn delete-btn"
+                                onclick="deleteEmployee(${index})"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -132,8 +137,12 @@
             const empName = document.getElementById("empName").value.trim();
             const empRole = document.getElementById("empRole").value.trim();
             const empDepartment = document.getElementById("empDepartment").value.trim();
-            const credits = Number(document.getElementById("leaveCredits").value);
-            const joiningDate = document.getElementById("joiningDate").value;
+            const leaveCredits = Number(
+                document.getElementById("leaveCredits").value
+            );
+
+            const joiningDate =
+                document.getElementById("joiningDate").value;
 
             const employees = getEmployees();
 
@@ -142,7 +151,7 @@
                 name: empName,
                 role: empRole,
                 department: empDepartment,
-                credits,
+                credits: leaveCredits,
                 joiningDate,
                 presentDate: getTodayDate(),
                 experience: calculateExperience(joiningDate)
@@ -152,7 +161,9 @@
                 employees[editIndex] = employeeData;
                 editIndex = null;
             } else {
-                const exists = employees.find(emp => emp.empId === empId);
+                const exists = employees.find(
+                    emp => emp.empId === empId
+                );
 
                 if (exists) {
                     alert("Employee ID already exists");
@@ -166,8 +177,13 @@
 
             form.reset();
 
-            document.getElementById("presentDate").value = "";
-            document.getElementById("experience").value = "";
+            if (document.getElementById("presentDate")) {
+                document.getElementById("presentDate").value = "";
+            }
+
+            if (document.getElementById("experience")) {
+                document.getElementById("experience").value = "";
+            }
 
             renderEmployees();
 
@@ -185,8 +201,14 @@
         document.getElementById("empDepartment").value = emp.department;
         document.getElementById("leaveCredits").value = emp.credits;
         document.getElementById("joiningDate").value = emp.joiningDate;
-        document.getElementById("presentDate").value = emp.presentDate;
-        document.getElementById("experience").value = emp.experience;
+
+        if (document.getElementById("presentDate")) {
+            document.getElementById("presentDate").value = emp.presentDate;
+        }
+
+        if (document.getElementById("experience")) {
+            document.getElementById("experience").value = emp.experience;
+        }
 
         editIndex = index;
     };

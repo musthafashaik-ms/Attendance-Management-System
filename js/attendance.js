@@ -27,6 +27,7 @@
         const logoutMinutes = oh * 60 + om;
 
         const diff = logoutMinutes - loginMinutes;
+
         return diff > 0 ? diff : 0;
     }
 
@@ -39,7 +40,11 @@
         return `${hrs}h ${mins}m`;
     }
 
-    function calculateAutoStatus(minutes) {
+    function calculateAutoStatus(minutes, login, logout) {
+        if (!login || !logout) {
+            return "Leave";
+        }
+
         if (minutes >= PRESENT_MINUTES) {
             return "Present";
         }
@@ -48,7 +53,7 @@
             return "Half Day";
         }
 
-        return "Absent";
+        return "Leave";
     }
 
     function getStatusBadge(status) {
@@ -56,12 +61,11 @@
             Present: "present",
             "Half Day": "halfday",
             Leave: "leave",
-            "Week Off": "weekoff",
-            Absent: "absent"
+            "Week Off": "weekoff"
         };
 
         return `
-            <span class="status ${classes[status] || "absent"}">
+            <span class="status ${classes[status] || "leave"}">
                 ${status}
             </span>
         `;
@@ -69,6 +73,7 @@
 
     function renderAttendance(date) {
         const table = document.getElementById("attendanceEmployeeTable");
+
         if (!table) return;
 
         const employees = getEmployees();
@@ -81,6 +86,10 @@
             const savedRecord = todayAttendance.find(
                 record => record.empId === emp.empId
             );
+
+            const initialStatus = savedRecord
+                ? savedRecord.status
+                : "Leave";
 
             table.innerHTML += `
                 <tr>
@@ -116,24 +125,20 @@
                     </td>
 
                     <td>
-                        <select class="statusSelect" data-id="${emp.empId}">
-                            <option value="Auto">Auto</option>
-                            <option value="Leave" ${
-                                savedRecord?.status === "Leave" ? "selected" : ""
-                            }>Leave</option>
-                            <option value="Week Off" ${
-                                savedRecord?.status === "Week Off" ? "selected" : ""
-                            }>Week Off</option>
-                        </select>
-
-                        <div class="statusCell" data-id="${emp.empId}">
-                            ${
-                                savedRecord
-                                    ? getStatusBadge(savedRecord.status)
-                                    : getStatusBadge("Absent")
-                            }
-                        </div>
-                    </td>
+                    <select class="statusSelect" data-id="${emp.empId}">
+                        <option value="Auto">Auto</option>
+                        <option value="Leave"
+                            ${savedRecord?.status === "Leave" ? "selected" : ""}
+                        >
+                            Leave
+                        </option>
+                        <option value="Week Off"
+                            ${savedRecord?.status === "Week Off" ? "selected" : ""}
+                        >
+                            Week Off
+                        </option>
+                    </select>
+                </td>
 
                     <td>${Number(emp.credits).toFixed(1)}</td>
                 </tr>
@@ -179,9 +184,13 @@
                 workingCell.textContent = formatWorkingHours(minutes);
 
                 if (statusSelect.value === "Auto") {
-                    statusCell.innerHTML = getStatusBadge(
-                        calculateAutoStatus(minutes)
+                    const status = calculateAutoStatus(
+                        minutes,
+                        loginInput.value,
+                        logoutInput.value
                     );
+
+                    statusCell.innerHTML = getStatusBadge(status);
                 }
             });
         });
@@ -209,7 +218,11 @@
 
                 const status =
                     this.value === "Auto"
-                        ? calculateAutoStatus(minutes)
+                        ? calculateAutoStatus(
+                              minutes,
+                              loginInput.value,
+                              logoutInput.value
+                          )
                         : this.value;
 
                 statusCell.innerHTML = getStatusBadge(status);
@@ -242,7 +255,11 @@
 
             const status =
                 statusSelect.value === "Auto"
-                    ? calculateAutoStatus(minutes)
+                    ? calculateAutoStatus(
+                          minutes,
+                          loginInput.value,
+                          logoutInput.value
+                      )
                     : statusSelect.value;
 
             return {
@@ -259,9 +276,11 @@
         });
 
         attendanceRecords[date] = attendanceData;
+
         saveAttendanceRecords(attendanceRecords);
 
         alert("Attendance saved successfully");
+
         renderAttendance(date);
     }
 
@@ -270,6 +289,7 @@
         const saveBtn = document.getElementById("saveAttendanceBtn");
 
         const today = new Date().toISOString().split("T")[0];
+
         dateInput.value = today;
 
         renderAttendance(today);

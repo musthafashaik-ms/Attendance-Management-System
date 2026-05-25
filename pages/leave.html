@@ -1,0 +1,121 @@
+<div class="top-header">
+    <div>
+        <h1>Leave Credit Management</h1>
+        <p>Manage employee leave credits and balances</p>
+    </div>
+</div>
+
+<!-- Leave Summary Cards -->
+<section class="summary-cards">
+
+    <div class="summary-card blue">
+        <div class="card-icon">
+            <i class="fa-solid fa-coins"></i>
+        </div>
+
+        <div class="card-info">
+            <span>TOTAL LEAVE CREDITS</span>
+            <h2 id="totalLeaveCredits">0.0</h2>
+        </div>
+    </div>
+
+    <div class="summary-card green">
+        <div class="card-icon">
+            <i class="fa-solid fa-user-check"></i>
+        </div>
+
+        <div class="card-info">
+            <span>POSITIVE BALANCE</span>
+            <h2 id="positiveBalanceCount">0</h2>
+        </div>
+    </div>
+
+    <div class="summary-card red">
+        <div class="card-icon">
+            <i class="fa-solid fa-user-xmark"></i>
+        </div>
+
+        <div class="card-info">
+            <span>NEGATIVE BALANCE</span>
+            <h2 id="negativeBalanceCount">0</h2>
+        </div>
+    </div>
+
+</section>
+
+<!-- Leave Form -->
+<section class="form-card">
+
+    <h2>Apply Employee Leave</h2>
+
+    <form id="leaveForm">
+
+        <div class="form-grid">
+
+            <select id="employeeSelect" required>
+                <option value="">Select Employee</option>
+            </select>
+
+            <input
+                type="date"
+                id="leaveDate"
+                required
+            >
+
+            <select id="leaveDays" required>
+                <option value="">Select Leave Type</option>
+                <option value="1">Full Day</option>
+                <option value="0.5">Half Day</option>
+            </select>
+
+            <input
+                type="text"
+                id="leaveReason"
+                placeholder="Leave Reason"
+                required
+            >
+
+        </div>
+
+        <button type="submit" class="primary-btn">
+            <i class="fa-solid fa-paper-plane"></i>
+            Apply Leave
+        </button>
+
+    </form>
+
+</section>
+
+<!-- Leave Records Table -->
+<section class="table-card">
+
+    <div class="table-header">
+        <h2>Employee Leave Records</h2>
+    </div>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Employee Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Leave Date</th>
+                    <th>Leave Days</th>
+                    <th>Reason</th>
+                    <th>Leave Credit Balance</th>
+                </tr>
+            </thead>
+
+            <tbody id="leaveTableBody">
+                <!-- Dynamic Leave Records -->
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
