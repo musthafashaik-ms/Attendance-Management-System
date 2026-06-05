@@ -8,7 +8,7 @@ body {
     font-family: 'Inter', sans-serif;
     background: #f3f5f9;
     color: #1e293b;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .app-container {

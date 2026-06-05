@@ -1,4 +1,5 @@
 (function () {
+
     const EMPLOYEE_KEY = "employees";
     const ATTENDANCE_KEY = "attendanceRecords";
 
@@ -6,41 +7,65 @@
     const HALF_DAY_MINUTES = 247; // 4h 07m
 
     function getEmployees() {
-        return JSON.parse(localStorage.getItem(EMPLOYEE_KEY)) || [];
+        return JSON.parse(
+            localStorage.getItem(EMPLOYEE_KEY)
+        ) || [];
     }
 
     function getAttendanceRecords() {
-        return JSON.parse(localStorage.getItem(ATTENDANCE_KEY)) || {};
+        return JSON.parse(
+            localStorage.getItem(ATTENDANCE_KEY)
+        ) || {};
     }
 
     function saveAttendanceRecords(data) {
-        localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(data));
+        localStorage.setItem(
+            ATTENDANCE_KEY,
+            JSON.stringify(data)
+        );
     }
 
     function getWorkingMinutes(login, logout) {
+
         if (!login || !logout) return 0;
 
-        const [lh, lm] = login.split(":").map(Number);
-        const [oh, om] = logout.split(":").map(Number);
+        const [lh, lm] =
+            login.split(":").map(Number);
 
-        const loginMinutes = lh * 60 + lm;
-        const logoutMinutes = oh * 60 + om;
+        const [oh, om] =
+            logout.split(":").map(Number);
 
-        const diff = logoutMinutes - loginMinutes;
+        const loginMinutes =
+            lh * 60 + lm;
+
+        const logoutMinutes =
+            oh * 60 + om;
+
+        const diff =
+            logoutMinutes - loginMinutes;
 
         return diff > 0 ? diff : 0;
     }
 
     function formatWorkingHours(minutes) {
+
         if (!minutes) return "-";
 
-        const hrs = Math.floor(minutes / 60);
-        const mins = minutes % 60;
+        const hrs =
+            Math.floor(minutes / 60);
+
+        const mins =
+            minutes % 60;
 
         return `${hrs}h ${mins}m`;
     }
 
-    function calculateAutoStatus(minutes, login, logout) {
+    function calculateAutoStatus(
+        minutes,
+        login,
+        logout
+    ) {
+
         if (!login || !logout) {
             return "Leave";
         }
@@ -56,50 +81,46 @@
         return "Leave";
     }
 
-    function getStatusBadge(status) {
-        const classes = {
-            Present: "present",
-            "Half Day": "halfday",
-            Leave: "leave",
-            "Week Off": "weekoff"
-        };
-
-        return `
-            <span class="status ${classes[status] || "leave"}">
-                ${status}
-            </span>
-        `;
-    }
-
     function renderAttendance(date) {
-        const table = document.getElementById("attendanceEmployeeTable");
+
+        const table =
+            document.getElementById(
+                "attendanceEmployeeTable"
+            );
 
         if (!table) return;
 
-        const employees = getEmployees();
-        const attendanceRecords = getAttendanceRecords();
-        const todayAttendance = attendanceRecords[date] || [];
+        const employees =
+            getEmployees();
+
+        const attendanceRecords =
+            getAttendanceRecords();
+
+        const dayRecords =
+            attendanceRecords[date] || [];
 
         table.innerHTML = "";
 
         employees.forEach(emp => {
-            const savedRecord = todayAttendance.find(
-                record => record.empId === emp.empId
-            );
 
-            const initialStatus = savedRecord
-                ? savedRecord.status
-                : "Leave";
+            const record =
+                dayRecords.find(
+                    r => r.empId === emp.empId
+                );
 
             table.innerHTML += `
                 <tr>
+
                     <td>
                         <input type="checkbox">
                     </td>
 
                     <td>${emp.empId}</td>
+
                     <td>${emp.name}</td>
+
                     <td>${emp.role}</td>
+
                     <td>${emp.department}</td>
 
                     <td>
@@ -107,7 +128,7 @@
                             type="time"
                             class="loginTime"
                             data-id="${emp.empId}"
-                            value="${savedRecord?.loginTime || ""}"
+                            value="${record?.loginTime || ""}"
                         >
                     </td>
 
@@ -116,31 +137,50 @@
                             type="time"
                             class="logoutTime"
                             data-id="${emp.empId}"
-                            value="${savedRecord?.logoutTime || ""}"
+                            value="${record?.logoutTime || ""}"
                         >
                     </td>
 
-                    <td class="workingHours" data-id="${emp.empId}">
-                        ${savedRecord?.workingHours || "-"}
+                    <td
+                        class="workingHours"
+                        data-id="${emp.empId}"
+                    >
+                        ${record?.workingHours || "-"}
                     </td>
 
                     <td>
-                    <select class="statusSelect" data-id="${emp.empId}">
-                        <option value="Auto">Auto</option>
-                        <option value="Leave"
-                            ${savedRecord?.status === "Leave" ? "selected" : ""}
+                        <select
+                            class="statusSelect"
+                            data-id="${emp.empId}"
                         >
-                            Leave
-                        </option>
-                        <option value="Week Off"
-                            ${savedRecord?.status === "Week Off" ? "selected" : ""}
-                        >
-                            Week Off
-                        </option>
-                    </select>
-                </td>
+                            <option value="Auto">
+                                Auto
+                            </option>
 
-                    <td>${Number(emp.credits).toFixed(1)}</td>
+                            <option value="Leave"
+                                ${record?.status === "Leave"
+                                    ? "selected"
+                                    : ""}
+                            >
+                                Leave
+                            </option>
+
+                            <option value="Week Off"
+                                ${record?.status === "Week Off"
+                                    ? "selected"
+                                    : ""}
+                            >
+                                Week Off
+                            </option>
+                        </select>
+                    </td>
+
+                    <td>
+                        ${Number(
+                            emp.credits || 0
+                        ).toFixed(1)}
+                    </td>
+
                 </tr>
             `;
         });
@@ -149,157 +189,294 @@
     }
 
     function attachAutoCalculation() {
-        const loginInputs = document.querySelectorAll(".loginTime");
-        const logoutInputs = document.querySelectorAll(".logoutTime");
 
-        [...loginInputs, ...logoutInputs].forEach(input => {
-            input.addEventListener("change", function () {
-                const empId = this.dataset.id;
+        const loginInputs =
+            document.querySelectorAll(
+                ".loginTime"
+            );
 
-                const loginInput = document.querySelector(
-                    `.loginTime[data-id="${empId}"]`
+        const logoutInputs =
+            document.querySelectorAll(
+                ".logoutTime"
+            );
+
+        [...loginInputs, ...logoutInputs]
+            .forEach(input => {
+
+                input.addEventListener(
+                    "change",
+                    function () {
+
+                        const empId =
+                            this.dataset.id;
+
+                        const login =
+                            document.querySelector(
+                                `.loginTime[data-id="${empId}"]`
+                            );
+
+                        const logout =
+                            document.querySelector(
+                                `.logoutTime[data-id="${empId}"]`
+                            );
+
+                        const workingCell =
+                            document.querySelector(
+                                `.workingHours[data-id="${empId}"]`
+                            );
+
+                        const minutes =
+                            getWorkingMinutes(
+                                login.value,
+                                logout.value
+                            );
+
+                        workingCell.textContent =
+                            formatWorkingHours(
+                                minutes
+                            );
+                    }
                 );
-
-                const logoutInput = document.querySelector(
-                    `.logoutTime[data-id="${empId}"]`
-                );
-
-                const statusSelect = document.querySelector(
-                    `.statusSelect[data-id="${empId}"]`
-                );
-
-                const workingCell = document.querySelector(
-                    `.workingHours[data-id="${empId}"]`
-                );
-
-                const statusCell = document.querySelector(
-                    `.statusCell[data-id="${empId}"]`
-                );
-
-                const minutes = getWorkingMinutes(
-                    loginInput.value,
-                    logoutInput.value
-                );
-
-                workingCell.textContent = formatWorkingHours(minutes);
-
-                if (statusSelect.value === "Auto") {
-                    const status = calculateAutoStatus(
-                        minutes,
-                        loginInput.value,
-                        logoutInput.value
-                    );
-
-                    statusCell.innerHTML = getStatusBadge(status);
-                }
             });
-        });
-
-        document.querySelectorAll(".statusSelect").forEach(select => {
-            select.addEventListener("change", function () {
-                const empId = this.dataset.id;
-
-                const loginInput = document.querySelector(
-                    `.loginTime[data-id="${empId}"]`
-                );
-
-                const logoutInput = document.querySelector(
-                    `.logoutTime[data-id="${empId}"]`
-                );
-
-                const statusCell = document.querySelector(
-                    `.statusCell[data-id="${empId}"]`
-                );
-
-                const minutes = getWorkingMinutes(
-                    loginInput.value,
-                    logoutInput.value
-                );
-
-                const status =
-                    this.value === "Auto"
-                        ? calculateAutoStatus(
-                              minutes,
-                              loginInput.value,
-                              logoutInput.value
-                          )
-                        : this.value;
-
-                statusCell.innerHTML = getStatusBadge(status);
-            });
-        });
     }
 
     function saveAttendance() {
-        const date = document.getElementById("attendanceDate").value;
-        const employees = getEmployees();
-        const attendanceRecords = getAttendanceRecords();
 
-        const attendanceData = employees.map(emp => {
-            const loginInput = document.querySelector(
-                `.loginTime[data-id="${emp.empId}"]`
+        const date =
+            document.getElementById(
+                "attendanceDate"
+            ).value;
+
+        const employees =
+            getEmployees();
+
+        const attendanceRecords =
+            getAttendanceRecords();
+
+        const records =
+            employees.map(emp => {
+
+                const login =
+                    document.querySelector(
+                        `.loginTime[data-id="${emp.empId}"]`
+                    );
+
+                const logout =
+                    document.querySelector(
+                        `.logoutTime[data-id="${emp.empId}"]`
+                    );
+
+                const statusSelect =
+                    document.querySelector(
+                        `.statusSelect[data-id="${emp.empId}"]`
+                    );
+
+                const minutes =
+                    getWorkingMinutes(
+                        login.value,
+                        logout.value
+                    );
+
+                const status =
+                    statusSelect.value === "Auto"
+                        ? calculateAutoStatus(
+                              minutes,
+                              login.value,
+                              logout.value
+                          )
+                        : statusSelect.value;
+
+                return {
+
+                    empId:
+                        emp.empId,
+
+                    name:
+                        emp.name,
+
+                    role:
+                        emp.role,
+
+                    department:
+                        emp.department,
+
+                    loginTime:
+                        login.value,
+
+                    logoutTime:
+                        logout.value,
+
+                    workingHours:
+                        formatWorkingHours(
+                            minutes
+                        ),
+
+                    status,
+
+                    credits:
+                        Number(
+                            emp.credits || 0
+                        ).toFixed(1)
+                };
+            });
+
+        attendanceRecords[date] =
+            records;
+
+        saveAttendanceRecords(
+            attendanceRecords
+        );
+
+        alert(
+            "Attendance saved successfully"
+        );
+    }
+
+    function downloadAttendancePDF() {
+
+        const date =
+            document.getElementById(
+                "attendanceDate"
+            ).value;
+
+        const attendanceRecords =
+            getAttendanceRecords();
+
+        const records =
+            attendanceRecords[date] || [];
+
+        if (!records.length) {
+
+            alert(
+                "No attendance found for selected date."
             );
 
-            const logoutInput = document.querySelector(
-                `.logoutTime[data-id="${emp.empId}"]`
+            return;
+        }
+
+        const { jsPDF } =
+            window.jspdf;
+
+        const doc =
+            new jsPDF(
+                "landscape"
             );
 
-            const statusSelect = document.querySelector(
-                `.statusSelect[data-id="${emp.empId}"]`
-            );
+        doc.setFontSize(18);
 
-            const minutes = getWorkingMinutes(
-                loginInput.value,
-                logoutInput.value
-            );
+        doc.text(
+            "Attendance Report",
+            14,
+            18
+        );
 
-            const status =
-                statusSelect.value === "Auto"
-                    ? calculateAutoStatus(
-                          minutes,
-                          loginInput.value,
-                          logoutInput.value
-                      )
-                    : statusSelect.value;
+        doc.setFontSize(11);
 
-            return {
-                empId: emp.empId,
-                name: emp.name,
-                role: emp.role,
-                department: emp.department,
-                loginTime: loginInput.value,
-                logoutTime: logoutInput.value,
-                workingHours: formatWorkingHours(minutes),
-                status,
-                credits: Number(emp.credits).toFixed(1)
-            };
+        doc.text(
+            `Date : ${date}`,
+            14,
+            26
+        );
+
+        const rows =
+            records.map(emp => [
+
+                emp.empId,
+                emp.name,
+                emp.role,
+                emp.department,
+                emp.loginTime,
+                emp.logoutTime,
+                emp.workingHours,
+                emp.status,
+                emp.credits
+
+            ]);
+
+        doc.autoTable({
+
+            startY: 35,
+
+            head: [[
+
+                "Emp ID",
+                "Name",
+                "Role",
+                "Department",
+                "Login",
+                "Logout",
+                "Working Hours",
+                "Status",
+                "Credits"
+
+            ]],
+
+            body: rows,
+
+            theme: "grid",
+
+            styles: {
+                fontSize: 8
+            },
+
+            headStyles: {
+                fillColor: [37, 99, 235]
+            }
         });
 
-        attendanceRecords[date] = attendanceData;
-
-        saveAttendanceRecords(attendanceRecords);
-
-        alert("Attendance saved successfully");
-
-        renderAttendance(date);
+        doc.save(
+            `Attendance_${date}.pdf`
+        );
     }
 
     function init() {
-        const dateInput = document.getElementById("attendanceDate");
-        const saveBtn = document.getElementById("saveAttendanceBtn");
 
-        const today = new Date().toISOString().split("T")[0];
+        const dateInput =
+            document.getElementById(
+                "attendanceDate"
+            );
 
-        dateInput.value = today;
+        const saveBtn =
+            document.getElementById(
+                "saveAttendanceBtn"
+            );
+
+        const pdfBtn =
+            document.getElementById(
+                "downloadPdfBtn"
+            );
+
+        const today =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+
+        dateInput.value =
+            today;
 
         renderAttendance(today);
 
-        dateInput.addEventListener("change", function () {
-            renderAttendance(this.value);
-        });
+        dateInput.addEventListener(
+            "change",
+            function () {
 
-        saveBtn.addEventListener("click", saveAttendance);
+                renderAttendance(
+                    this.value
+                );
+            }
+        );
+
+        saveBtn.addEventListener(
+            "click",
+            saveAttendance
+        );
+
+        pdfBtn.addEventListener(
+            "click",
+            downloadAttendancePDF
+        );
     }
 
     init();
+
 })();

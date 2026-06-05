@@ -1,6 +1,7 @@
 (function () {
     const EMPLOYEE_KEY = "employees";
     const ATTENDANCE_KEY = "attendanceRecords";
+    const OT_KEY = "otRecords";
 
     let creditsChart = null;
 
@@ -12,13 +13,16 @@
         return JSON.parse(localStorage.getItem(ATTENDANCE_KEY)) || {};
     }
 
+    function getOTRecords() {
+        return JSON.parse(localStorage.getItem(OT_KEY)) || [];
+    }
+
     function getStatusBadge(status) {
         const badges = {
             "Present": "present",
             "Half Day": "halfday",
             "Leave": "leave",
-            "Week Off": "weekoff",
-            
+            "Week Off": "weekoff"
         };
 
         return `
@@ -38,6 +42,7 @@
     }
 
     function renderCreditsChart(positive, zero, negative, totalCredits) {
+
         const canvas = document.getElementById("creditsChart");
 
         if (!canvas || typeof Chart === "undefined") return;
@@ -71,7 +76,8 @@
             }
         });
 
-        const totalEmployees = positive + zero + negative || 1;
+        const totalEmployees =
+            positive + zero + negative || 1;
 
         document.getElementById("positivePercent").textContent =
             Math.round((positive / totalEmployees) * 100);
@@ -86,17 +92,148 @@
             totalCredits.toFixed(1);
     }
 
+    function renderOTRecords() {
+
+    const otTable =
+        document.getElementById("otPayTable");
+
+    if (!otTable) return;
+
+    const records = getOTRecords();
+    const employees = getEmployees();
+    const attendanceRecords =
+        getAttendanceRecords();
+
+    otTable.innerHTML = "";
+
+    if(records.length === 0){
+
+        otTable.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center;">
+                    No OT Records
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    records
+        .slice()
+        .reverse()
+        .slice(0,5)
+        .forEach(record => {
+
+            otTable.innerHTML += `
+                <tr>
+
+                    <td>${record.empId}</td>
+                    <td>${record.date}</td>
+                    <td>${record.hours}</td>
+                    <td>${record.mode}</td>
+
+                    <td style="text-align:center;">
+
+                        <button
+                            class="details-btn"
+                            onclick="showOTDetails(
+                                '${record.empId}',
+                                '${record.date}'
+                            )"
+                        >
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+        });
+
+    window.showOTDetails =
+        function(empId,date){
+
+            const employee =
+                employees.find(
+                    emp => emp.empId === empId
+                );
+
+            const dayRecords =
+                attendanceRecords[date] || [];
+
+            const attendance =
+                dayRecords.find(
+                    emp => emp.empId === empId
+                );
+
+            document.getElementById(
+                "otDetailsBody"
+            ).innerHTML = `
+
+                <table class="ot-detail-table">
+
+                    <tr>
+                        <th>Employee Name</th>
+                        <td>${employee?.name || "-"}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Date</th>
+                        <td>${date}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Login Time</th>
+                        <td>${attendance?.loginTime || "-"}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Logout Time</th>
+                        <td>${attendance?.logoutTime || "-"}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Work Hours</th>
+                        <td>${attendance?.workingHours || "-"}</td>
+                    </tr>
+
+                </table>
+            `;
+
+            document.getElementById(
+                "otDetailsModal"
+            ).style.display = "flex";
+        };
+}
+
     function renderDashboard() {
-        const attendanceTable = document.getElementById("attendanceTable");
-        const negativeCreditTable = document.getElementById("negativeCreditTable");
-        const dateFilter = document.getElementById("dateFilter");
 
-        if (!attendanceTable || !negativeCreditTable || !dateFilter) return;
+        const attendanceTable =
+            document.getElementById("attendanceTable");
 
-        const employees = getEmployees();
-        const attendanceRecords = getAttendanceRecords();
-        const selectedDate = dateFilter.value;
-        const dayAttendance = attendanceRecords[selectedDate] || [];
+        const negativeCreditTable =
+            document.getElementById("negativeCreditTable");
+
+        const dateFilter =
+            document.getElementById("dateFilter");
+
+        if (
+            !attendanceTable ||
+            !negativeCreditTable ||
+            !dateFilter
+        ) return;
+
+        const employees =
+            getEmployees();
+
+        const attendanceRecords =
+            getAttendanceRecords();
+
+        const selectedDate =
+            dateFilter.value;
+
+        const dayAttendance =
+            attendanceRecords[selectedDate] || [];
 
         attendanceTable.innerHTML = "";
         negativeCreditTable.innerHTML = "";
@@ -112,6 +249,7 @@
         let negativeCredits = 0;
 
         if (dayAttendance.length === 0) {
+
             attendanceTable.innerHTML = `
                 <tr>
                     <td colspan="9" style="text-align:center;">
@@ -122,9 +260,12 @@
         }
 
         dayAttendance.forEach(emp => {
-            const credits = Number(emp.credits || 0);
+
+            const credits =
+                Number(emp.credits || 0);
 
             switch (emp.status) {
+
                 case "Present":
                     presentCount++;
                     break;
@@ -146,9 +287,11 @@
 
             if (credits > 0) {
                 positiveCredits++;
-            } else if (credits === 0) {
+            }
+            else if (credits === 0) {
                 zeroCredits++;
-            } else {
+            }
+            else {
                 negativeCredits++;
             }
 
@@ -162,16 +305,26 @@
                     <td>${emp.logoutTime || "-"}</td>
                     <td>${emp.workingHours || "-"}</td>
                     <td>${getStatusBadge(emp.status)}</td>
-                    <td>${credits.toFixed(1)}</td>
+                   <td class="${
+    credits < 0
+        ? 'negative-credit'
+        : credits === 0
+        ? 'zero-credit'
+        : 'positive-credit'
+}">
+    ${credits.toFixed(1)}
+</td>
                 </tr>
             `;
         });
 
-        const negativeEmployees = employees.filter(
-            emp => Number(emp.credits) < 0
-        );
+        const negativeEmployees =
+            employees.filter(
+                emp => Number(emp.credits) < 0
+            );
 
         if (negativeEmployees.length === 0) {
+
             negativeCreditTable.innerHTML = `
                 <tr>
                     <td colspan="3" style="text-align:center;">
@@ -179,27 +332,53 @@
                     </td>
                 </tr>
             `;
-        } else {
-            negativeEmployees.forEach(emp => {
-                negativeCreditTable.innerHTML += `
-                    <tr>
-                        <td>${emp.empId}</td>
-                        <td>${emp.name}</td>
-                        <td>${Number(emp.credits).toFixed(1)}</td>
-                    </tr>
-                `;
-            });
+        }
+        else {
+
+         negativeEmployees.forEach(emp => {
+
+    const credits =
+        Number(emp.credits || 0);
+
+    negativeCreditTable.innerHTML += `
+        <tr>
+
+            <td>${emp.empId}</td>
+
+            <td>${emp.name}</td>
+
+            <td class="negative-credit">
+                ${credits.toFixed(1)}
+            </td>
+
+        </tr>
+    `;
+});
         }
 
-        document.getElementById("totalEmployees").textContent = employees.length;
-        document.getElementById("presentCount").textContent = presentCount;
-        document.getElementById("halfDayCount").textContent = halfDayCount;
-        document.getElementById("leaveCount").textContent = leaveCount;
-        document.getElementById("weekOffCount").textContent = weekOffCount;
+        document.getElementById("totalEmployees").textContent =
+            employees.length;
 
-        document.getElementById("positiveCredits").textContent = positiveCredits;
-        document.getElementById("zeroCredits").textContent = zeroCredits;
-        document.getElementById("negativeCredits").textContent = negativeCredits;
+        document.getElementById("presentCount").textContent =
+            presentCount;
+
+        document.getElementById("halfDayCount").textContent =
+            halfDayCount;
+
+        document.getElementById("leaveCount").textContent =
+            leaveCount;
+
+        document.getElementById("weekOffCount").textContent =
+            weekOffCount;
+
+        document.getElementById("positiveCredits").textContent =
+            positiveCredits;
+
+        document.getElementById("zeroCredits").textContent =
+            zeroCredits;
+
+        document.getElementById("negativeCredits").textContent =
+            negativeCredits;
 
         renderCreditsChart(
             positiveCredits,
@@ -208,33 +387,67 @@
             totalCredits
         );
 
-        const negativeAlert = document.getElementById("negativeAlert");
+        const negativeAlert =
+            document.getElementById("negativeAlert");
 
         if (negativeCredits > 0) {
+
             negativeAlert.style.display = "flex";
+
             negativeAlert.querySelector("span").textContent =
                 `${negativeCredits} Employees have Negative Credits`;
-        } else {
+        }
+        else {
+
             negativeAlert.style.display = "none";
         }
+
+        renderOTRecords();
 
         updateSystemTime();
     }
 
     function initDashboard() {
-        const dateFilter = document.getElementById("dateFilter");
+
+        const dateFilter =
+            document.getElementById("dateFilter");
 
         if (!dateFilter) return;
 
-        const today = new Date().toISOString().split("T")[0];
+        const today =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+
         dateFilter.value = today;
 
         renderDashboard();
 
-        dateFilter.addEventListener("change", renderDashboard);
+        dateFilter.addEventListener(
+            "change",
+            renderDashboard
+        );
     }
 
     initDashboard();
 
     setInterval(updateSystemTime, 1000);
+
 })();
+const closeModal =
+    document.getElementById(
+        "closeOtModal"
+    );
+
+if(closeModal){
+
+    closeModal.addEventListener(
+        "click",
+        () => {
+
+            document.getElementById(
+                "otDetailsModal"
+            ).style.display = "none";
+        }
+    );
+}

@@ -1,0 +1,79 @@
+<div class="top-header">
+    <div>
+        <h1>OT / Pay Records</h1>
+        <p>Manage employee overtime records</p>
+    </div>
+</div>
+
+<section class="form-card">
+    <h2>Add OT Record</h2>
+
+    <form id="otForm">
+
+        <div class="form-grid">
+
+            <input
+                type="text"
+                id="otEmpId"
+                placeholder="Employee ID"
+                required>
+
+            <input
+                type="date"
+                id="otDate"
+                required>
+
+            <input
+                type="number"
+                id="otHours"
+                placeholder="OT Hours"
+                step="0.5"
+                required>
+
+            <select id="otMode">
+                <option value="Credit">
+                    Credit
+                </option>
+
+                <option value="Pay">
+                    Pay
+                </option>
+            </select>
+
+        </div>
+
+        <button
+            type="submit"
+            class="primary-btn">
+            Save OT Record
+        </button>
+
+    </form>
+
+</section>
+
+<section class="table-card">
+
+    <h2>OT Records</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Emp ID</th>
+                    <th>Date</th>
+                    <th>OT Hours</th>
+                    <th>Mode</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="otTableBody"></tbody>
+
+        </table>
+
+    </div>
+
+</section>

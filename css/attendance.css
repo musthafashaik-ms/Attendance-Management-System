@@ -102,17 +102,37 @@ select:focus {
     background: #1d4ed8;
 }
 
-/* TABLE */
-.table-wrapper {
-    overflow-x: auto;
-    border: 1px solid #dbe2ea;
-    border-radius: 12px;
-    background: white;
+/* Attendance Table */
+
+#attendanceEmployeeTable th,
+#attendanceEmployeeTable td {
+    padding: 10px 8px;
+    font-size: 13px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+#attendanceEmployeeTable input[type="time"] {
+    width: 105px;
+    padding: 8px;
+}
+
+#attendanceEmployeeTable .statusSelect {
+    width: 130px;
+    min-width: 130px;
+}
+
+#attendanceEmployeeTable th:first-child,
+#attendanceEmployeeTable td:first-child {
+    width: 45px;
+}
+
+#attendanceEmployeeTable th:nth-child(2),
+#attendanceEmployeeTable td:nth-child(2) {
+    width: 80px;
+}
+
+#attendanceEmployeeTable th:last-child,
+#attendanceEmployeeTable td:last-child {
+    width: 90px;
 }
 
 thead {
@@ -126,7 +146,8 @@ thead th {
     font-weight: 700;
     color: #334155;
     text-align: left;
-    white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 tbody td {
@@ -135,7 +156,8 @@ tbody td {
     font-size: 14px;
     color: #334155;
     vertical-align: middle;
-    white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 tbody tr:hover {

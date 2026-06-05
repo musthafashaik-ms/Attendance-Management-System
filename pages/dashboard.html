@@ -1,7 +1,7 @@
 <div class="top-header">
     <div>
         <h1>Employee Attendance Dashboard</h1>
-        <p>Manage employee attendance dynamically</p>
+        <p>Manage employee attendance </p>
     </div>
 </div>
 
@@ -62,6 +62,7 @@
 
 <!-- Attendance Table -->
 <section class="attendance-section">
+
     <div class="section-header">
         <h3>Employee Attendance Overview</h3>
         <input type="date" id="dateFilter">
@@ -84,8 +85,10 @@
             </thead>
 
             <tbody id="attendanceTable"></tbody>
+
         </table>
     </div>
+
 </section>
 
 <!-- Bottom Widgets -->
@@ -93,54 +96,65 @@
 
     <!-- Leave Credits Summary -->
     <div class="widget">
+
         <div class="widget-header">
             <h3>Leave Credits Summary</h3>
             <p>Monthly credit added by Admin: 1.5</p>
         </div>
 
         <div class="credit-chart-container">
+
             <div class="chart-box">
+
                 <canvas id="creditsChart"></canvas>
 
                 <div class="chart-center">
                     <span id="totalCredits">0.0</span>
                     <small>Credits Added</small>
                 </div>
+
             </div>
 
-           <div class="credit-stats">
-    <p>
+          <div class="credit-stats">
+
+    <div class="credit-row">
         <span class="legend positive"></span>
-        Positive Credits:
+        <span>Positive Credits</span>
         <strong id="positiveCredits">0</strong>
-        (<span id="positivePercent">0</span>%)
-    </p>
+        <span>(<span id="positivePercent">0</span>%)</span>
+    </div>
 
-    <p>
+    <div class="credit-row">
         <span class="legend zero"></span>
-        Zero Credits:
+        <span>Zero Credits</span>
         <strong id="zeroCredits">0</strong>
-        (<span id="zeroPercent">0</span>%)
-    </p>
+        <span>(<span id="zeroPercent">0</span>%)</span>
+    </div>
 
-    <p>
+    <div class="credit-row">
         <span class="legend negative"></span>
-        Negative Credits:
+        <span>Negative Credits</span>
         <strong id="negativeCredits">0</strong>
-        (<span id="negativePercent">0</span>%)
-    </p>
+        <span>(<span id="negativePercent">0</span>%)</span>
+    </div>
+
 </div>
+
         </div>
+
     </div>
 
     <!-- Negative Credit Alert -->
     <div class="widget">
+
         <div class="widget-header">
             <h3>Negative Credits Alert</h3>
         </div>
 
         <div class="table-wrapper">
+
             <table>
+
                 <thead>
                     <tr>
                         <th>Emp ID</th>
@@ -150,44 +164,82 @@
                 </thead>
 
                 <tbody id="negativeCreditTable"></tbody>
+
             </table>
+
         </div>
+
     </div>
 
-    <!-- Dynamic OT / Pay Records -->
+    <!-- OT / Pay Records -->
     <div class="widget">
+
         <div class="widget-header">
             <h3>OT / Pay Records</h3>
         </div>
 
         <div class="table-wrapper">
+
             <table>
+
                 <thead>
                     <tr>
                         <th>Emp ID</th>
                         <th>Date</th>
                         <th>OT Hours</th>
                         <th>Mode</th>
+                         <th>Details</th>
+
                     </tr>
                 </thead>
 
                 <tbody id="otPayTable"></tbody>
+
             </table>
+
         </div>
+
     </div>
 
 </section>
 
 <footer class="dashboard-footer">
+
     <div class="footer-left">
         <i class="fa-solid fa-circle-check"></i>
+
         <span id="systemUpdate">
             System is up to date. Last updated: --
         </span>
     </div>
 
-    <div class="footer-right" id="negativeAlert" style="display:none;">
+    <div
+        class="footer-right"
+        id="negativeAlert"
+        style="display:none;"
+    >
         <span></span>
         <i class="fa-solid fa-triangle-exclamation"></i>
     </div>
+<!-- OT DETAILS MODAL -->
+
+<div id="otDetailsModal" class="ot-modal">
+
+    <div class="ot-modal-content">
+
+        <div class="ot-modal-header">
+
+            <h3>OT / Pay Record Details</h3>
+
+            <button id="closeOtModal">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+
+        </div>
+
+        <div id="otDetailsBody"></div>
+
+    </div>
+
+</div>
 </footer>

@@ -1,0 +1,107 @@
+<div class="top-header">
+    <div>
+        <h1>Reports & Analytics</h1>
+        <p>Attendance, Leave and OT Reports</p>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<section class="summary-cards">
+
+    <div class="summary-card">
+        <span>Total Employees</span>
+        <h2 id="totalEmployees">0</h2>
+    </div>
+
+    <div class="summary-card">
+        <span>Present Days</span>
+        <h2 id="presentDays">0</h2>
+    </div>
+
+    <div class="summary-card">
+        <span>Leave Days</span>
+        <h2 id="leaveDays">0</h2>
+    </div>
+
+    <div class="summary-card">
+        <span>Total OT Hours</span>
+        <h2 id="totalOTHours">0</h2>
+    </div>
+
+    <div class="summary-card">
+        <span>Total Credits</span>
+        <h2 id="totalCredits">0</h2>
+    </div>
+
+</section>
+
+<!-- Filters -->
+<section class="filter-card">
+
+    <h3>Report Filters</h3>
+
+    <div class="filter-grid">
+
+        <input type="date" id="fromDate">
+
+        <input type="date" id="toDate">
+
+        <!-- Employee Filter -->
+        <select id="employeeFilter">
+            <option value="">All Employees</option>
+        </select>
+
+        <!-- Department Filter -->
+        <select id="departmentFilter">
+            <option value="">All Departments</option>
+        </select>
+
+       <button
+    id="generateReportBtn"
+    class="primary-btn">
+    <i class="fa-solid fa-floppy-disk"></i>
+    Generate Report
+</button>
+
+<button
+    id="downloadPdfBtn"
+    class="primary-btn">
+    <i class="fa-solid fa-file-pdf"></i>
+    Print Report
+</button>
+
+    </div>
+
+</section>
+
+<!-- Report Table -->
+<section class="table-card">
+
+    <h2>Attendance Report</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Emp ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Present Days</th>
+                    <th>Leave Days</th>
+                    <th>Half Days</th>
+                    <th>OT Hours</th>
+                    <th>Leave Credits</th>
+                </tr>
+            </thead>
+
+            <tbody id="reportTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
